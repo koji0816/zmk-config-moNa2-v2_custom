@@ -19,7 +19,8 @@ config SPI
     default y
 
 config PMW3610
-    CONFIG_PMW3610=y
+    bool "Enable PMW3610 pointing device"
+    default y
 
 endif
 

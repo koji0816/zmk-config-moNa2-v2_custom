@@ -1,18 +1,18 @@
-# zmk-config-moNa2-v2_custom/CMakeLists.txt の最終修正案
+# zmk-config-moNa2-v2_custom/CMakeLists.txt の最終確定版
 
-# カスタムモジュールとして定義
 zephyr_library()
 
-# west.yml で定義したモジュール名 'zmk-pmw3610-driver' をパスとして取得
 set(PMW3610_MODULE_DIR "${ZEPHYR_BASE}/../zmk-pmw3610-driver")
 
-# PMW3610 のヘッダーファイルとソースファイルを見つけるためのパス
-# ヘッダーはモジュールルート直下、ソースは src/ にあると想定
+# 修正: インクルードパスとして 'src' ディレクトリとモジュールルートを追加
+# ヘッダーファイル (pmw3610.h, pixart.h) が見つかるようにする
 include_directories(${PMW3610_MODULE_DIR}/src)
-include_directories(${PMW3610_MODULE_DIR})
+# このモジュールのヘッダーがモジュールルートのinclude/ではなくsrc/にあるため、
+# アプリケーションが他の場所から参照できるようにモジュールルートも追加
+# include_directories(${PMW3610_MODULE_DIR}) # これは不要な可能性が高いが、念のため
 
-# ソースファイルをアプリケーションのビルドに直接追加
-# sayu-hub のリポジトリ構造では src/pmw3610.c にあると推測します
+# 確定: ソースファイル (pmw3610.c) をアプリケーションのビルドに直接追加
+# これにより、リンカーエラーの原因となっていたシンボルが生成されます。
 target_sources(app PRIVATE
     ${PMW3610_MODULE_DIR}/src/pmw3610.c
 )

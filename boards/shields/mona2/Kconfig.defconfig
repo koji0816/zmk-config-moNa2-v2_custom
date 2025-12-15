@@ -19,8 +19,7 @@ config SPI
     default y
 
 config PMW3610
-    **bool**
-    default y
+    CONFIG_PMW3610=y
 
 endif
 

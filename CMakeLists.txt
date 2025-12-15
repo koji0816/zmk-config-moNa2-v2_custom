@@ -1,18 +1,16 @@
-# zmk-config-moNa2-v2_custom/CMakeLists.txt の内容
+# zmk-config-moNa2-v2_custom/CMakeLists.txt の修正後の内容
 
-# ZMKのカスタムモジュール用としてライブラリを定義
 zephyr_library()
 
-# west.yml で定義したモジュール名 'zmk-pmw3610-driver' をパスとして取得
-# ${ZEPHYR_BASE}/../{モジュール名} は west build 環境での一般的なパス構造です。
 set(PMW3610_MODULE_DIR "${ZEPHYR_BASE}/../zmk-pmw3610-driver")
 
-# PMW3610 ドライバのヘッダーファイルが見つかるようにインクルードパスを追加
-# (PMW3610 ドライバのソースが 'drivers/sensor/pmw3610' にあると仮定)
-include_directories(${PMW3610_MODULE_DIR}/drivers/sensor/pmw3610)
+# 修正1: ヘッダーファイルのパスを調整 (モジュールのルート直下を想定)
+# ZMKモジュールはインクルードパスにルートを追加している可能性が高い
+# 以下の行は不要な可能性があるが、念のため残しておく
+# include_directories(${PMW3610_MODULE_DIR})
 
-# PMW3610 のソースファイル (pmw3610.c) をアプリケーションのビルドに直接追加
-# これにより、リンカーエラーの原因となっていたシンボルが生成されます。
+# 修正2: ソースファイルのパスを調整
+# 多くのZMK外部モジュールは 'src/' ディレクトリにソースを配置します。
 target_sources(app PRIVATE
-    ${PMW3610_MODULE_DIR}/drivers/sensor/pmw3610/pmw3610.c
+    ${PMW3610_MODULE_DIR}/src/pmw3610.c
 )

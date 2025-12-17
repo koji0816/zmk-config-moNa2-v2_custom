@@ -42,6 +42,48 @@
             bindings = <&to 0 &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
             label = "TO_LAYER_0";
         };
+
+        macro1: macro1 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_PARENTHESIS &kp RIGHT_PARENTHESIS &kp LEFT_ARROW>;
+            label = "MACRO1";
+        };
+
+        macro2: macro2 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_BRACKET &kp RIGHT_BRACKET &kp LEFT_ARROW>;
+            label = "MACRO2";
+        };
+
+        macro3: macro3 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_BRACE &kp RIGHT_BRACE &kp LEFT_ARROW>;
+            label = "MACRO3";
+        };
+
+        macro_ctrl_c: macro_ctrl_c {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LC(C)>;
+            label = "MACRO_CTRL_C";
+        };
+
+        macro_ctrl_v: macro_ctrl_v {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LC(V)>;
+            label = "MACRO_CTRL_V";
+        };
+
+        macro_screenshot: macro_screenshot {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LS(LG(S))>;
+            label = "MACRO_SCREENSHOT";
+        };
     };
 
     behaviors {
@@ -98,10 +140,10 @@
 
         layer_2 {
             bindings = <
-&kp EXCLAMATION  &kp AT_SIGN  &kp POUND          &kp DOLLAR  &kp PERCENT                      &kp CARET  &kp AMPERSAND  &kp ASTERISK  &kp MINUS  &kp UNDERSCORE
-&kp GRAVE        &kp TILDE    &kp DOUBLE_QUOTES  &kp SQT     &trans                  &trans   &mkp MB3   &mkp MB1       &mkp MB2      &kp EQUAL  &kp PLUS
-&kp F1           &kp F2       &kp F3             &kp F4      &kp F5       &kp F11    &kp F12  &kp F6     &kp F7         &kp F8        &kp F9     &kp F10
-&trans           &trans       &trans             &trans      &trans       &trans     &trans   &trans                                             &trans
+&kp EXCLAMATION   &kp AT_SIGN  &kp POUND          &kp DOLLAR  &kp PERCENT                    &kp COLON  &key_repeat  &kp LEFT_PARENTHESIS  &kp RPAR           &kp BACKSLASH
+&kp SINGLE_QUOTE  &kp CARET    &kp AMPERSAND      &kp ASTRK   &kp EQUAL              &none   &kp SEMI   &mkp MB1     &kp LEFT_BRACKET      &kp RIGHT_BRACKET  &kp INT_YEN
+&kp TILDE         &kp GRAVE    &kp DOUBLE_QUOTES  &kp MINUS   &kp PLUS     &none     &none   &kp PIPE   &kp F7       &kp LEFT_BRACE        &kp RIGHT_BRACE    &none
+&trans            &trans       &trans             &trans      &trans       &trans    &trans  &trans                                                           &none
             >;
 
             sensor-bindings = <&scroll_up_down>;

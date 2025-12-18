@@ -72,6 +72,7 @@
         17 //
         19 //
     >;
+    require-prior-idle-ms = <200>; //AML誤作動防止
 };
 
 

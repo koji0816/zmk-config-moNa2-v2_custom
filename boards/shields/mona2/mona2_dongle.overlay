@@ -1,0 +1,5 @@
+#include "mona2.dtsi"
+
+// ドングルには物理キーがないため無効化し、xiaordのダミーを割り当てます
+&kscan0 { status = "disabled"; };
+/ { chosen { zmk,kscan = &xiaord_mock_kscan; }; };

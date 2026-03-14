@@ -12,8 +12,6 @@ manifest:
       url-base: https://github.com/caksoylar  
     - name: zettaface  # <-- Input Processor Keybind
       url-base: https://github.com/zettaface
-    - name: TakeshiAkehi           # <--- 追加
-      url-base: https://github.com/TakeshiAkehi # <--- 追加
   projects:
     - name: zmk
       remote: zmkfirmware
@@ -33,8 +31,5 @@ manifest:
     - name: zmk-input-processor-keybind
       remote: zettaface
       revision: main
-    - name: zmk-module-xiaord      # <--- 追加
-      remote: TakeshiAkehi         # <--- 追加
-      revision: main               # <--- 追加
   self:
     path: config

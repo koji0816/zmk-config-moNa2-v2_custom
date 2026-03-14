@@ -19,7 +19,7 @@
 ---
 include:
   - board: seeeduino_xiao_ble
-    shield: mona2_dongle xiaord
+    shield: Kconfig xiaord
     artifact-name: mona2_dongle
   - board: seeeduino_xiao_ble
     shield: mona2_r rgbled_adapter

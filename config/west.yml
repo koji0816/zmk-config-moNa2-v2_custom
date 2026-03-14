@@ -11,12 +11,7 @@ manifest:
     - name: caksoylar  # <-- RGB LED
       url-base: https://github.com/caksoylar  
     - name: zettaface  # <-- Input Processor Keybind
-      url-base: https://github.com/zettaface
-    # round display
-    - name: zmk-module-xiaord
-      url: https://github.com/TakeshiAkehi/zmk-module-xiaord.git
-      revision: main
-  
+      url-base: https://github.com/zettaface      
   projects:
     - name: zmk
       remote: zmkfirmware
@@ -37,8 +32,9 @@ manifest:
       remote: zettaface
       revision: main
     # round display
+      # round display
     - name: zmk-module-xiaord
-      remote: TakeshiAkehi
+      url: https://github.com/TakeshiAkehi/zmk-module-xiaord.git
       revision: main
   self:
     path: config

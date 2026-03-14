@@ -1,5 +1,13 @@
 #include "mona2.dtsi"
 
-// ドングルには物理キーがないため無効化し、xiaordのダミーを割り当てます
+// ドングルには物理キーがないため無効化します
 &kscan0 { status = "disabled"; };
+
+// ZMK全体のキーマトリクスをxiaordのダミーに差し替えます
 / { chosen { zmk,kscan = &xiaord_mock_kscan; }; };
+
+// 物理レイアウトが無効化されたkscan0を参照してエラーになるのを防ぐため、
+// こちらもxiaordのダミーを参照するように上書きします
+&physical_layout0 {
+    kscan = <&xiaord_mock_kscan>;
+};

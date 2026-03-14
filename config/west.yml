@@ -13,8 +13,10 @@ manifest:
     - name: zettaface  # <-- Input Processor Keybind
       url-base: https://github.com/zettaface
     # round display
-    - name: TakeshiAkehi
-      url-base: https://github.com/TakeshiAkehi
+    - name: zmk-module-xiaord
+      url: https://github.com/TakeshiAkehi/zmk-module-xiaord.git
+      revision: main
+  
   projects:
     - name: zmk
       remote: zmkfirmware

@@ -18,10 +18,21 @@
 #
 ---
 include:
+  # ドングル (Central + ディスプレイ)
+  - board: seeeduino_xiao_ble
+    shield: mona2_dongle xiaord
+    snippet: studio-rpc-usb-uart
+    artifact-name: mona2_dongle
+
+  # 右手 (Peripheral + トラックボール)
   - board: seeeduino_xiao_ble
     shield: mona2_r rgbled_adapter
-    snippet: studio-rpc-usb-uart
+    artifact-name: mona2_right
+
+  # 左手 (Peripheral + エンコーダ)
   - board: seeeduino_xiao_ble
     shield: mona2_l rgbled_adapter
+    artifact-name: mona2_left
+
   - board: seeeduino_xiao_ble
     shield: settings_reset

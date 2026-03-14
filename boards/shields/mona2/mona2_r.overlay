@@ -49,22 +49,23 @@
 trackball_central: trackball_central@0 {
         status = "okay";
         compatible = "pixart,pmw3610";
-        //マイコンがnRFシリーズ
         reg = <0>;
-        //label = "PMW3610_TRACKBALL";
         spi-max-frequency = <2000000>;
         
-        // ▼ ここを irq-gpios から motion-gpios に変更する
-        motion-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>; //P0.02を指定(MOTION)
-        
+        motion-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <650>;
         //swap-xy;
         invert-x;
-        //COROPIT版ではコメントアウトを外す
-        invert-y; //COROPIT版ではコメントアウトを外す
-        evt-type = <INPUT_EV_REL>;
-        x-input-code = <INPUT_REL_X>;
-        y-input-code = <INPUT_REL_Y>;
+        invert-y;
+        
+        // ▼ 以下の3行を削除します
+        // evt-type = <INPUT_EV_REL>;
+        // x-input-code = <INPUT_REL_X>;
+        // y-input-code = <INPUT_REL_Y>;
+
+        // ▼ 代わりに以下の2行を追加します
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
     };
 };
 

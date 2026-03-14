@@ -34,7 +34,7 @@ manifest:
     - name: zmk-input-processor-keybind
       remote: zettaface
       revision: main
-      # round display
+    # round display
     - name: zmk-module-xiaord
       remote: TakeshiAkehi
       revision: main

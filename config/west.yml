@@ -26,8 +26,11 @@ manifest:
     - name: zmk-input-processor-keybind
       remote: zettaface
       revision: main
+#    - name: zmk-module-xiaord
+#      remote: TakeshiAkehi
+#      revision: main
     - name: zmk-module-xiaord
-      remote: TakeshiAkehi
-      revision: main
+      url: https://github.com/koji0816/zmk-module-xiaord-cust.git # ご自身のカスタムリポジトリURLに変更
+      revision: no-central # 読み込むブランチ名を指定
   self:
     path: config

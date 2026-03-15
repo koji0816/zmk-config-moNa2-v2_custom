@@ -1,23 +1,25 @@
 #include "mona2.dtsi"
 
-// 1. ゴースト入力（レイヤー固定）を防ぐため、物理キー枠を無効化
+// 1. ゴースト入力（キーのノイズ連打）を防ぐため、物理ピンの指定だけを削除してダミー化します
 &kscan0 {
+    compatible = "zmk,kscan-mock";
+    columns = <11>;
+    rows = <4>;
+    events = <0>;
+    
+    /delete-property/ row-gpios;
+    /delete-property/ col-gpios;
+    /delete-property/ diode-direction;
+};
+
+// 2. ドングル本体の物理エンコーダーピンを無効化し、通信のパンク（大渋滞）を解消します
+&left_encoder {
     status = "disabled";
 };
 
-// 2. ディスプレイ（xiaord）のタッチボタンを有効化
-/ {
-    chosen {
-        zmk,kscan = &xiaord_mock_kscan;
-    };
+&right_encoder {
+    status = "disabled";
 };
 
-// 3. システムを安定させるため、物理レイアウトをダミー枠に紐付け
-&physical_layout0 {
-    kscan = <&xiaord_mock_kscan>;
-};
-
-// 4. 【超重要】センサーシステムは生かしつつ、存在しない物理エンコーダーだけを無効化
-// これにより、左手や右手から送られてくるエンコーダーやトラックボールの通信を受け取れるようになります。
-&left_encoder { status = "disabled"; };
-&right_encoder { status = "disabled"; };
+// ※これ以上は何も書きません！
+// 画面用の設定（chosen）などはモジュールが自動でやってくれるため、書くとレイアウトが壊れます。

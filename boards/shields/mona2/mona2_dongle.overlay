@@ -1,19 +1,25 @@
 #include "mona2.dtsi"
 
+// 1. 公式手順：物理キーマトリクスを無効化
 &kscan0 {
     status = "disabled";
 };
 
+// 2. 公式手順：ディスプレイ用のダミー枠をシステムの主役に設定
 / {
     chosen {
         zmk,kscan = &xiaord_mock_kscan;
     };
 };
 
+// 3. 【超重要】12キー制限の解除：物理レイアウトの紐付けを解除
+// （これをしないと、13番目以降の文字キーがすべて切り捨てられます）
 &physical_layout0 {
-    kscan = <&xiaord_mock_kscan>;
+    /delete-property/ kscan;
 };
 
+// 4. 【超重要】ノイズ暴走防止：ドングルには存在しないセンサーをすべて無効化
+// （これをしないと、空きピンがノイズを拾って大渋滞を起こします）
 &left_encoder {
     status = "disabled";
 };

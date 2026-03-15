@@ -1,6 +1,6 @@
 #include "mona2.dtsi"
 
-// 1. 左右からのキー位置データを正しく受け取るためのダミー枠（11列×4行）
+// 1. ピンの競合を避けつつ、左右からの入力をこぼさず受け取るダミーの受け皿
 &kscan0 {
     compatible = "zmk,kscan-mock";
     columns = <11>;
@@ -11,14 +11,9 @@
     /delete-property/ label;
 };
 
-// 2. ディスプレイ（XIAO Round Display）用のタッチボタンをシステムに登録
-/ { 
-    chosen { 
-        zmk,kscan = &xiaord_mock_kscan; 
-    }; 
-};
-
-// 3. ドングル上の不要なセンサーを無効化（タッチパネルノイズによる誤作動を防止）
+// 2. ドングル上の不要なセンサーを無効化（I2C通信の競合・フリーズ防止）
 &sensors {
     status = "disabled";
 };
+
+// ※今回は chosen { ... } の呪文は絶対に書きません！

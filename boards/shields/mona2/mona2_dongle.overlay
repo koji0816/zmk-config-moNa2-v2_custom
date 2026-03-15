@@ -1,23 +1,33 @@
 #include "mona2.dtsi"
 
-// 1. 公式指定：ディスプレイモジュールのタッチボタンをシステムの主役に設定
+// 1. ZMKの分割通信を正しく受け取るため、元のキー枠（kscan0）をダミー化して再利用します。
+// （サイズも11x4なので、左右からのキーデータを1文字もこぼさず受け取れます）
+&kscan0 {
+    compatible = "zmk,kscan-mock";
+    columns = <11>;
+    rows = <4>;
+    events = <0>;
+
+    // ディスプレイ（SPI/I2C）とのピン競合を防ぐため、物理ピンの設定を完全削除
+    /delete-property/ row-gpios;
+    /delete-property/ col-gpios;
+    /delete-property/ diode-direction;
+};
+
+// 2. システムの「主役」の受け皿を、xiaordの枠ではなく、このkscan0に指定します。
+// これにより、左右から飛んできたデータが真っ直ぐkscan0に流れます。
 / {
     chosen {
-        zmk,kscan = &xiaord_mock_kscan;
+        zmk,kscan = &kscan0;
     };
 };
 
-// 2. エラー回避：物理レイアウト（キー配列）がエラーを起こさないよう、参照先を更新
+// 3. キー配列（物理レイアウト）もkscan0を参照するように固定します。
 &physical_layout0 {
-    kscan = <&xiaord_mock_kscan>;
+    kscan = <&kscan0>;
 };
 
-// 3. ノイズ防止：ドングルに存在しない物理キーマトリクスを無効化
-&kscan0 {
-    status = "disabled";
-};
-
-// 4. 【最重要】CPUパンク防止：ドングルに存在しないエンコーダーを無効化（暴走を止める）
+// 4. 空きピンがノイズを拾ってエンコーダーを暴走させ、キー入力をフリーズさせるのを防ぎます。
 &left_encoder {
     status = "disabled";
 };
@@ -25,5 +35,3 @@
 &right_encoder {
     status = "disabled";
 };
-
-// ※トラックボールの記述は削除しました

@@ -1,18 +1,32 @@
 #include "mona2.dtsi"
 
-// 1. 左右のキー入力を受け取るためのダミーの受け皿（11列×4行）
+// 1. 左右のキー入力を取りこぼさず受け取るためのダミー枠（11列×4行）
 &kscan0 {
     compatible = "zmk,kscan-mock";
     columns = <11>;
     rows = <4>;
     events = <0>;
     
-    // ディスプレイとのピン競合を防ぐため、物理ピンの設定だけを剥がします
+    // 物理ピンの設定を削除してディスプレイとの競合を防止
     /delete-property/ row-gpios;
     /delete-property/ diode-direction;
+    /delete-property/ label;
 };
 
-// 2. ドングルには物理センサーがないため無効化（誤作動防止）
+// 2. ディスプレイ（xiaord）のタッチボタンを有効化する設定
+/ {
+    chosen {
+        zmk,kscan = &xiaord_mock_kscan;
+    };
+};
+
+// 3. 【超重要】物理レイアウト（キー配列）の参照先を11x4のダミー枠に固定する
+// これにより、タッチパネルを生かしつつ、キー入力が弾かれるのを防ぎます
+&physical_layout0 {
+    kscan = <&kscan0>;
+};
+
+// 4. ドングル上の不要なセンサーを無効化（誤作動防止）
 &sensors {
     status = "disabled";
 };

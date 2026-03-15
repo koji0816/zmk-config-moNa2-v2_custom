@@ -1,17 +1,30 @@
 #include "mona2.dtsi"
 
-&kscan0 {
-    status = "disabled";
-};
-
+// 1. ZMKの「受け入れ門番」となる、巨大な0キーダミー枠を自作します。
+// （サイズを大きくすることで切り捨てを防ぎ、ローカルキーを0にすることで配列ズレを防ぎます）
 / {
+    dongle_dummy_kscan: dongle_dummy_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <12>;
+        rows = <4>;
+        events = <0>;
+    };
+
+    // 2. 公式の手順通り、主役はxiaordの枠にします（これでタッチボタンが動きます）
     chosen {
         zmk,kscan = &xiaord_mock_kscan;
     };
 };
 
+// 3. 【超重要】物理レイアウトは、自作した「巨大なダミー枠」に紐付けます。
+// （これでZMKシステムが「12列4行のキーボードだ」と正しく認識し、全入力を許可します）
 &physical_layout0 {
-    kscan = <&xiaord_mock_kscan>;
+    kscan = <&dongle_dummy_kscan>;
+};
+
+// 4. ドングルの空きピンのノイズ暴走を防ぎます。
+&kscan0 {
+    status = "disabled";
 };
 
 &left_encoder {

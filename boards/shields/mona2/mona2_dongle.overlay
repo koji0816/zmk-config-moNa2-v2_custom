@@ -1,30 +1,18 @@
 #include "mona2.dtsi"
 
-// 1. エラーの元凶となる元の物理キー枠を、安全に完全無効化します
+// 左右からのキー入力を1文字もこぼさず受け取るため、
+// 元の受け皿（kscan0）をそのままダミー化して再利用します。
 &kscan0 {
-    status = "disabled";
+    compatible = "zmk,kscan-mock";
+    columns = <11>;
+    rows = <4>;
+    events = <0>;
+    
+    // ディスプレイ（SPI/I2C）とのピン競合・クラッシュを防ぐため、物理ピン設定だけを削除します
+    /delete-property/ row-gpios;
+    /delete-property/ col-gpios;
+    /delete-property/ diode-direction;
 };
 
-// 2. まっさらな「11列×4行」のダミー枠を新規作成し、システムにセットします
-/ {
-    dongle_mock_kscan: dongle_mock_kscan {
-        compatible = "zmk,kscan-mock";
-        columns = <11>;
-        rows = <4>;
-        events = <0>;
-    };
-
-    chosen {
-        zmk,kscan = &dongle_mock_kscan;
-    };
-};
-
-// 3. 物理レイアウトも、新しいダミー枠を見るように紐付け直します
-&physical_layout0 {
-    kscan = <&dongle_mock_kscan>;
-};
-
-// 4. ドングル上の不要な物理センサーを無効化（I2Cの競合やノイズ誤作動を防止）
-&sensors {
-    status = "disabled";
-};
+// ※ &sensors の無効化は絶対に書きません！（エンコーダーを殺さないため）
+// ※ ディスプレイ(xiaord)用の特別な上書きも不要です。モジュールは自動で動きます。

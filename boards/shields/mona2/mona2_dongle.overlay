@@ -1,18 +1,18 @@
 #include "mona2.dtsi"
 
-// 左右からのキー入力を1文字もこぼさず受け取るため、
-// 元の受け皿（kscan0）をそのままダミー化して再利用します。
+// 1. 左右のキー入力を受け取るためのダミーの受け皿（11列×4行）
 &kscan0 {
     compatible = "zmk,kscan-mock";
     columns = <11>;
     rows = <4>;
     events = <0>;
     
-    // ディスプレイ（SPI/I2C）とのピン競合・クラッシュを防ぐため、物理ピン設定だけを削除します
+    // ディスプレイとのピン競合を防ぐため、物理ピンの設定だけを剥がします
     /delete-property/ row-gpios;
-    /delete-property/ col-gpios;
     /delete-property/ diode-direction;
 };
 
-// ※ &sensors の無効化は絶対に書きません！（エンコーダーを殺さないため）
-// ※ ディスプレイ(xiaord)用の特別な上書きも不要です。モジュールは自動で動きます。
+// 2. ドングルには物理センサーがないため無効化（誤作動防止）
+&sensors {
+    status = "disabled";
+};

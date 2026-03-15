@@ -9,6 +9,7 @@
     events = <0>;
     /delete-property/ row-gpios;
     /delete-property/ diode-direction;
+    /delete-property/ label; // 不要な警告を消すための追記
 };
 
 // 2. ディスプレイ（XIAO Round Display）用のタッチボタン登録
@@ -19,7 +20,4 @@
     status = "disabled";
 };
 
-// 4. 右手から無線で送られてくるトラックボールデータの処理を有効化
-&trackball_central_listener {
-    status = "okay";
-};
+// ▼ 前回の一番下にあった &trackball_central_listener のブロックは削除しました

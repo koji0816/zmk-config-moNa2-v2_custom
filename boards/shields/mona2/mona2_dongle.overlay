@@ -1,21 +1,24 @@
 #include "mona2.dtsi"
 
-// 1. 左右のキー入力を正しく受け取るためのダミーの受け皿
-// （コンボが成功した時と同じ、一番正しい設定です）
+// 1. 公式READMEの手順通り、元の物理キー枠を無効化します
 &kscan0 {
-    compatible = "zmk,kscan-mock";
-    columns = <11>;
-    rows = <4>;
-    events = <0>;
-    
-    // ディスプレイとのピン競合を防ぐため、物理ピンの設定だけを剥がします
-    /delete-property/ row-gpios;
-    /delete-property/ col-gpios;
-    /delete-property/ diode-direction;
+    status = "disabled";
 };
 
-// 2. 【超重要】空きピンのノイズ暴走（大渋滞）を止めるため、ドングルのエンコーダーを無効化します
-// これによりタイマーが正常に動き、単体キーやトラックボールのデータがPCに届くようになります
+// 2. 公式READMEの手順通り、ディスプレイモジュールのダミー枠をシステムに登録します
+/ {
+    chosen {
+        zmk,kscan = &xiaord_mock_kscan;
+    };
+};
+
+// 3. moNa2の物理レイアウトがエラーを起こさないよう、参照先を上記のダミー枠に紐付け直します
+&physical_layout0 {
+    kscan = <&xiaord_mock_kscan>;
+};
+
+// 4. 【超重要】ドングルの空きピンがノイズを拾い、見えないエンコーダーを猛スピードで
+// 回し続けてキー入力をフリーズさせる（大渋滞を起こす）のを防ぐため、無効化します
 &left_encoder {
     status = "disabled";
 };

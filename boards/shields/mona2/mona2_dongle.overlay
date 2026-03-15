@@ -1,36 +1,18 @@
 #include "mona2.dtsi"
 
-/ {
-    // 1. ZMKの「受け入れゲート」となるダミー枠を新規作成します。
-    // サイズを「12列×4行」と大きく設定し、左右の全キーをこぼさず受け入れます。
-    dongle_dummy_kscan: dongle_dummy_kscan {
-        compatible = "zmk,kscan-mock";
-        columns = <12>;
-        rows = <4>;
-        events = <0>;
-    };
-
-    // 2. この自作したダミー枠をシステムの主役に設定します。
-    chosen {
-        zmk,kscan = &dongle_dummy_kscan;
-    };
-};
-
-// 3. キー配列（物理レイアウト）もこの大きなダミー枠に紐付けます。
-// これにより、ZMKが「12列×4行の正しいキーボード」として全入力を許可します。
-&physical_layout0 {
-    kscan = <&dongle_dummy_kscan>;
-};
-
-// 4. 空きピンがノイズを拾って大渋滞を起こすのを防ぐため、ドングルの物理ハードを無効化。
+// 物理キーマトリクスを無効化
 &kscan0 {
     status = "disabled";
 };
 
-&left_encoder {
-    status = "disabled";
+// ディスプレイ用のダミー枠を主役に設定
+/ {
+    chosen {
+        zmk,kscan = &xiaord_mock_kscan;
+    };
 };
 
-&right_encoder {
-    status = "disabled";
+// ZMKのレイアウトに紐付け
+&physical_layout0 {
+    kscan = <&xiaord_mock_kscan>;
 };

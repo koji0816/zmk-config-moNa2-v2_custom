@@ -1,30 +1,36 @@
 #include "mona2.dtsi"
 
-// 1. 左右の配列ズレを防ぐため、ドングルのローカルキーを「0キー」のダミーとして上書きします。
-&kscan0 {
-    compatible = "zmk,kscan-mock";
-    columns = <0>;
-    rows = <0>;
-    events = <0>;
-    
-    // 物理ピンの設定を削除し、クラッシュを防ぎます
-    /delete-property/ row-gpios;
-    /delete-property/ col-gpios;
-    /delete-property/ diode-direction;
-};
-
-// 2. システムの主役を、この「0キーのダミー」に設定します。
-// （xiaordの枠を使うと12ズレてしまうため、絶対に使いません）
 / {
+    // 1. ZMKの「受け入れゲート」となるダミー枠を新規作成します。
+    // サイズを「12列×4行」と大きく設定し、左右の全キーをこぼさず受け入れます。
+    dongle_dummy_kscan: dongle_dummy_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <12>;
+        rows = <4>;
+        events = <0>;
+    };
+
+    // 2. この自作したダミー枠をシステムの主役に設定します。
     chosen {
-        zmk,kscan = &kscan0;
+        zmk,kscan = &dongle_dummy_kscan;
     };
 };
 
-// 3. ZMKのキーマップが壊れないよう、物理レイアウトを紐付けます。
+// 3. キー配列（物理レイアウト）もこの大きなダミー枠に紐付けます。
+// これにより、ZMKが「12列×4行の正しいキーボード」として全入力を許可します。
 &physical_layout0 {
-    kscan = <&kscan0>;
+    kscan = <&dongle_dummy_kscan>;
 };
 
-// ※エンコーダーは絶対に無効化しません！
-// ここで無効化してしまうと、左右からの回転データを受け取れなくなります。
+// 4. 空きピンがノイズを拾って大渋滞を起こすのを防ぐため、ドングルの物理ハードを無効化。
+&kscan0 {
+    status = "disabled";
+};
+
+&left_encoder {
+    status = "disabled";
+};
+
+&right_encoder {
+    status = "disabled";
+};

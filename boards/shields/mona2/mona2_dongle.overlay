@@ -1,28 +1,28 @@
 #include "mona2.dtsi"
 
-// 1. 公式READMEの手順：ドングルの物理キーマトリクスを無効化
+// 1. 物理キーマトリクスを無効化（公式手順）
 &kscan0 {
     status = "disabled";
 };
 
-// 2. 公式READMEの手順：xiaordのダミー枠をシステムのkscanに設定
+// 2. ディスプレイ用のダミー枠をシステムの主役に設定（公式手順）
 / {
     chosen {
         zmk,kscan = &xiaord_mock_kscan;
     };
 };
 
-// 3. ノイズ誤作動防止：ドングルには存在しないエンコーダーを無効化
+// 3. 【超重要】ドングルがクラッシュしないよう、物理レイアウトをダミー枠に紐付ける
+// （これを消したのが前回の接続不良の原因です！）
+&physical_layout0 {
+    kscan = <&xiaord_mock_kscan>;
+};
+
+// 4. ドングルの空きピンがノイズを拾って大渋滞を起こすのを防ぐ（moNa2特有の必須設定）
 &left_encoder {
     status = "disabled";
 };
 
 &right_encoder {
     status = "disabled";
-};
-
-// 4. 12キー制限の解除：物理レイアウトから誤った紐付けを完全に削除
-// これによりキーが切り捨てられる現象が直ります
-&physical_layout0 {
-    /delete-property/ kscan;
 };

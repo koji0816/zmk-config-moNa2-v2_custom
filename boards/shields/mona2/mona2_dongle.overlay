@@ -1,29 +1,30 @@
 #include "mona2.dtsi"
 
-// 1. 公式手順：物理キーマトリクスを無効化
+// 1. 左右の配列ズレを防ぐため、ドングルのローカルキーを「0キー」のダミーとして上書きします。
 &kscan0 {
-    status = "disabled";
+    compatible = "zmk,kscan-mock";
+    columns = <0>;
+    rows = <0>;
+    events = <0>;
+    
+    // 物理ピンの設定を削除し、クラッシュを防ぎます
+    /delete-property/ row-gpios;
+    /delete-property/ col-gpios;
+    /delete-property/ diode-direction;
 };
 
-// 2. 公式手順：ディスプレイ用のダミー枠をシステムの主役に設定
+// 2. システムの主役を、この「0キーのダミー」に設定します。
+// （xiaordの枠を使うと12ズレてしまうため、絶対に使いません）
 / {
     chosen {
-        zmk,kscan = &xiaord_mock_kscan;
+        zmk,kscan = &kscan0;
     };
 };
 
-// 3. 【超重要】12キー制限の解除：物理レイアウトの紐付けを解除
-// （これをしないと、13番目以降の文字キーがすべて切り捨てられます）
+// 3. ZMKのキーマップが壊れないよう、物理レイアウトを紐付けます。
 &physical_layout0 {
-    /delete-property/ kscan;
+    kscan = <&kscan0>;
 };
 
-// 4. 【超重要】ノイズ暴走防止：ドングルには存在しないセンサーをすべて無効化
-// （これをしないと、空きピンがノイズを拾って大渋滞を起こします）
-&left_encoder {
-    status = "disabled";
-};
-
-&right_encoder {
-    status = "disabled";
-};
+// ※エンコーダーは絶対に無効化しません！
+// ここで無効化してしまうと、左右からの回転データを受け取れなくなります。

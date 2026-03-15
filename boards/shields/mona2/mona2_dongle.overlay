@@ -1,28 +1,32 @@
 #include "mona2.dtsi"
 
-// 1. 公式READMEの手順通り、元の物理キー枠を無効化します
-&kscan0 {
-    status = "disabled";
-};
-
-// 2. 公式READMEの手順通り、ディスプレイモジュールのダミー枠をシステムに登録します
+// 1. 公式指定：ディスプレイモジュールのタッチボタンをシステムの主役に設定
 / {
     chosen {
         zmk,kscan = &xiaord_mock_kscan;
     };
 };
 
-// 3. moNa2の物理レイアウトがエラーを起こさないよう、参照先を上記のダミー枠に紐付け直します
+// 2. エラー回避：物理レイアウト（キー配列）がエラーを起こさないよう、参照先を更新
 &physical_layout0 {
     kscan = <&xiaord_mock_kscan>;
 };
 
-// 4. 【超重要】ドングルの空きピンがノイズを拾い、見えないエンコーダーを猛スピードで
-// 回し続けてキー入力をフリーズさせる（大渋滞を起こす）のを防ぐため、無効化します
+// 3. ノイズ防止：ドングルに存在しない物理キーマトリクスを無効化
+&kscan0 {
+    status = "disabled";
+};
+
+// 4. 【最重要】CPUパンク防止：ドングルに存在しないセンサー類をすべて名指しで無効化
 &left_encoder {
     status = "disabled";
 };
 
 &right_encoder {
+    status = "disabled";
+};
+
+// これが最大の元凶（割り込みストーム）を引き起こしていたトラックボールの無効化です
+&trackball_central {
     status = "disabled";
 };

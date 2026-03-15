@@ -1,19 +1,30 @@
 #include "mona2.dtsi"
 
-// 1. 本来のキーマトリクス（kscan0）を、左右からの通信を受け止める11x4のダミーに作り替えます
+// 1. エラーの元凶となる元の物理キー枠を、安全に完全無効化します
 &kscan0 {
-    compatible = "zmk,kscan-mock";
-    columns = <11>;
-    rows = <4>;
-    events = <0>;
-    
-    // 物理キー用の設定を削除してエラーを回避
-    /delete-property/ row-gpios;
-    /delete-property/ diode-direction;
-    /delete-property/ label;
+    status = "disabled";
 };
 
-// 2. ドングル上の不要なセンサーを無効化（フリーズやI2Cの競合を防止）
+// 2. まっさらな「11列×4行」のダミー枠を新規作成し、システムにセットします
+/ {
+    dongle_mock_kscan: dongle_mock_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <11>;
+        rows = <4>;
+        events = <0>;
+    };
+
+    chosen {
+        zmk,kscan = &dongle_mock_kscan;
+    };
+};
+
+// 3. 物理レイアウトも、新しいダミー枠を見るように紐付け直します
+&physical_layout0 {
+    kscan = <&dongle_mock_kscan>;
+};
+
+// 4. ドングル上の不要な物理センサーを無効化（I2Cの競合やノイズ誤作動を防止）
 &sensors {
     status = "disabled";
 };

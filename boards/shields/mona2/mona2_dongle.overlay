@@ -1,18 +1,17 @@
 #include "mona2.dtsi"
 
-// 1. ゴースト入力（キーのノイズ連打）を防ぐため、物理ピンの指定だけを削除してダミー化します
+// 1. ドングルの空きピンがノイズを拾って暴走するのを防ぐため、物理マトリクスを無効化します
 &kscan0 {
-    compatible = "zmk,kscan-mock";
-    columns = <11>;
-    rows = <4>;
-    events = <0>;
-    
-    /delete-property/ row-gpios;
-    /delete-property/ col-gpios;
-    /delete-property/ diode-direction;
+    status = "disabled";
 };
 
-// 2. ドングル本体の物理エンコーダーピンを無効化し、通信のパンク（大渋滞）を解消します
+// 2. 【超重要】物理レイアウトから「ローカルキーボード（ドングル自身）」の紐付けを解除します。
+// これにより、ドングルはエラーを起こさず、左右から飛んでくる無線データだけを処理するようになります。
+&physical_layout0 {
+    /delete-property/ kscan;
+};
+
+// 3. 同じくノイズ暴走を防ぐため、ドングルには存在しないエンコーダーを無効化します
 &left_encoder {
     status = "disabled";
 };
@@ -20,6 +19,3 @@
 &right_encoder {
     status = "disabled";
 };
-
-// ※これ以上は何も書きません！
-// 画面用の設定（chosen）などはモジュールが自動でやってくれるため、書くとレイアウトが壊れます。

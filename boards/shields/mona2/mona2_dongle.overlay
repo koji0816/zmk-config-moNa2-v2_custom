@@ -1,19 +1,30 @@
 #include "mona2.dtsi"
 
-// 1. ピンの競合を避けつつ、左右からの入力をこぼさず受け取るダミーの受け皿
+// 1. ドングルには物理キーがないため、元のキーマトリクスは無効化します
 &kscan0 {
-    compatible = "zmk,kscan-mock";
-    columns = <11>;
-    rows = <4>;
-    events = <0>;
-    /delete-property/ row-gpios;
-    /delete-property/ diode-direction;
-    /delete-property/ label;
-};
-
-// 2. ドングル上の不要なセンサーを無効化（I2C通信の競合・フリーズ防止）
-&sensors {
     status = "disabled";
 };
 
-// ※今回は chosen { ... } の呪文は絶対に書きません！
+// 2. ディスプレイ（xiaord）が必須とするダミー枠をシステムに登録します（フリーズ回避）
+/ {
+    chosen {
+        zmk,kscan = &xiaord_mock_kscan;
+    };
+};
+
+// 3. 【超重要】xiaordの極小ダミー枠を、「11列×4行」に強制的に拡大します！
+// これにより、左右からのキー入力を取りこぼさず全て受け止められるようになります。
+&xiaord_mock_kscan {
+    columns = <11>;
+    rows = <4>;
+};
+
+// 4. キーボードの物理レイアウトも、拡大したダミー枠を参照するように紐付けます
+&physical_layout0 {
+    kscan = <&xiaord_mock_kscan>;
+};
+
+// 5. ドングルには存在しないエンコーダ等のセンサーを無効化（誤作動・I2C競合を防止）
+&sensors {
+    status = "disabled";
+};

@@ -16,3 +16,8 @@
 &physical_layout0 {
     kscan = <&xiaord_mock_kscan>;
 };
+
+// エンコーダーとトラックボールを無効化（ノイズ防止）
+&left_encoder { status = "disabled"; };
+&right_encoder { status = "disabled"; };
+&trackball_central { status = "disabled"; };

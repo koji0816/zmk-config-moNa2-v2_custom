@@ -1,13 +1,25 @@
 #include "mona2.dtsi"
 
-// ドングルには物理キーがないため無効化します
-&kscan0 { status = "disabled"; };
+// 1. ドングルが左右のキー入力を正しく受け取れるように、
+// 実際のキーボードと同じ「11列×4行」のダミー枠を用意します
+&kscan0 {
+    compatible = "zmk,kscan-mock";
+    columns = <11>;
+    rows = <4>;
+    events = <0>;
+    /delete-property/ row-gpios;
+    /delete-property/ diode-direction;
+};
 
-// ZMK全体のキーマトリクスをxiaordのダミーに差し替えます
+// 2. ディスプレイ（XIAO Round Display）用のタッチボタン登録
 / { chosen { zmk,kscan = &xiaord_mock_kscan; }; };
 
-// 物理レイアウトが無効化されたkscan0を参照してエラーになるのを防ぐため、
-// こちらもxiaordのダミーを参照するように上書きします
-&physical_layout0 {
-    kscan = <&xiaord_mock_kscan>;
+// 3. ドングルには物理エンコーダがないため無効化（クラッシュ防止）
+&sensors {
+    status = "disabled";
+};
+
+// 4. 右手から無線で送られてくるトラックボールデータの処理を有効化
+&trackball_central_listener {
+    status = "okay";
 };

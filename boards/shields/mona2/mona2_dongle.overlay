@@ -1,23 +1,23 @@
 #include "mona2.dtsi"
 
-// 物理キーマトリクスを無効化
 &kscan0 {
     status = "disabled";
 };
 
-// ディスプレイ用のダミー枠を主役に設定
 / {
     chosen {
         zmk,kscan = &xiaord_mock_kscan;
     };
 };
 
-// ZMKのレイアウトに紐付け
 &physical_layout0 {
     kscan = <&xiaord_mock_kscan>;
 };
 
-// エンコーダーとトラックボールを無効化（ノイズ防止）
-&left_encoder { status = "disabled"; };
-&right_encoder { status = "disabled"; };
-# &trackball_central { status = "disabled"; };
+&left_encoder {
+    status = "disabled";
+};
+
+&right_encoder {
+    status = "disabled";
+};

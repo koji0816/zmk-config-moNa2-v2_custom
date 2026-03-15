@@ -1,17 +1,21 @@
 #include "mona2.dtsi"
 
-// 1. ドングルの空きピンがノイズを拾って暴走するのを防ぐため、物理マトリクスを無効化します
+// 1. 左右のキー入力を正しく受け取るためのダミーの受け皿
+// （コンボが成功した時と同じ、一番正しい設定です）
 &kscan0 {
-    status = "disabled";
+    compatible = "zmk,kscan-mock";
+    columns = <11>;
+    rows = <4>;
+    events = <0>;
+    
+    // ディスプレイとのピン競合を防ぐため、物理ピンの設定だけを剥がします
+    /delete-property/ row-gpios;
+    /delete-property/ col-gpios;
+    /delete-property/ diode-direction;
 };
 
-// 2. 【超重要】物理レイアウトから「ローカルキーボード（ドングル自身）」の紐付けを解除します。
-// これにより、ドングルはエラーを起こさず、左右から飛んでくる無線データだけを処理するようになります。
-&physical_layout0 {
-    /delete-property/ kscan;
-};
-
-// 3. 同じくノイズ暴走を防ぐため、ドングルには存在しないエンコーダーを無効化します
+// 2. 【超重要】空きピンのノイズ暴走（大渋滞）を止めるため、ドングルのエンコーダーを無効化します
+// これによりタイマーが正常に動き、単体キーやトラックボールのデータがPCに届くようになります
 &left_encoder {
     status = "disabled";
 };

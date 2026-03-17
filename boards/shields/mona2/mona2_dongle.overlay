@@ -1,4 +1,4 @@
-#include "your_keyboard.dtsi"
+#include "mona2.dtsi"
 
 // The dongle has no physical key matrix — disable it and use xiaord's mock kscan.
 &kscan0 { status = "disabled"; };

@@ -1,21 +1,5 @@
-#include "mona2.dtsi"
+#include "your_keyboard.dtsi"
 
-/ {
-    chosen {
-        // xiaordのタッチ入力をZMKのメインkscanに
-        zmk,kscan = &xiaord_mock_kscan;
-    };
-};
-
-// physical_layoutのkscanはkscan0のまま残す（消さない！）
-// kscan0はdisabledにしない — splitのキーイベント処理に必要
-// &physical_layout0 は触らない
-
-// エンコーダーはドングルに存在しないので無効化
-&left_encoder {
-    status = "disabled";
-};
-
-&right_encoder {
-    status = "disabled";
-};
+// The dongle has no physical key matrix — disable it and use xiaord's mock kscan.
+&kscan0 { status = "disabled"; };
+/ { chosen { zmk,kscan = &xiaord_mock_kscan; }; };

@@ -1,12 +1,38 @@
 #include "mona2.dtsi"
 
-// Dongle has no physical matrix — disable the gpio kscan and use xiaord's mock kscan.
+/ {
+    // 1. ZMKの「受け入れ門番」となる、巨大なダミー枠を自作します。
+    // （status = "okay"; を入れることで今回のビルドエラーを完全に防ぎます）
+    dongle_dummy_kscan: dongle_dummy_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <12>;
+        rows = <4>;
+        events = <0>;
+        status = "okay";
+    };
+
+    // 2. モジュールのタッチボタンを動かすため、主役はxiaordの枠にします。
+    chosen {
+        zmk,kscan = &xiaord_mock_kscan;
+    };
+};
+
+// 3. 物理レイアウトは、自作した「巨大なダミー枠」に紐付けます。
+// （これでビルドエラーも、13キー目以降の切り捨て問題も解決します）
+&physical_layout0 {
+    kscan = <&dongle_dummy_kscan>;
+};
+
+// 4. ドングルの空きピンのノイズ暴走を防ぎます。
+// （これを無効化したせいでエラーが出ていたので、上の3番で別のダミー枠に逃がしました）
 &kscan0 {
     status = "disabled";
 };
 
-/ {
-    chosen {
-        zmk,kscan = &xiaord_mock_kscan;
-    };
+&left_encoder {
+    status = "disabled";
+};
+
+&right_encoder {
+    status = "disabled";
 };

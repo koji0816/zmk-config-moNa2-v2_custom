@@ -25,15 +25,15 @@ include:
     artifact-name: mona2_dongle
 
   # 右手 (Peripheral + トラックボール)
-  - board: xiao_ble//zmk
+  - board: seeeduino_xiao_ble
     shield: mona2_r rgbled_adapter
     artifact-name: mona2_right
 
   # 左手 (Peripheral + エンコーダ)
-  - board: xiao_ble//zmk
+  - board: seeeduino_xiao_ble
     shield: mona2_l rgbled_adapter
     artifact-name: mona2_left
 
   # リセット用
-  - board: xiao_ble//zmk
+  - board: seeeduino_xiao_ble
     shield: settings_reset

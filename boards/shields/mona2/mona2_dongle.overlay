@@ -18,11 +18,6 @@
     /delete-property/ diode-direction;
 };
 
-// dongle側でトラックボール入力を受信するlistenerを有効化
-&trackball_central_listener {
-    status = "okay";
-    // device プロパティは peripheral側(mona2_r)にあるので dongle側には不要
-};
 
 // dongleにはエンコーダなし
 &left_encoder {

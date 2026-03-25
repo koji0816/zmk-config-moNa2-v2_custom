@@ -1,28 +1,11 @@
 #include "mona2.dtsi"
 
+&kscan0 {
+    status = "disabled";
+};
+
 / {
     chosen {
-        zmk,kscan = &kscan0;  // kscan0をmock化したものを使う
+        zmk,kscan = &xiaord_mock_kscan;
     };
-};
-
-// kscan0をmockダミーに改造（公式ガイド準拠）
-&kscan0 {
-    compatible = "zmk,kscan-mock";
-    columns = <0>;
-    rows = <0>;
-    events = <0>;
-    status = "okay";
-    /delete-property/ row-gpios;
-    /delete-property/ col-gpios;
-    /delete-property/ diode-direction;
-};
-
-
-// dongleにはエンコーダなし
-&left_encoder {
-    status = "disabled";
-};
-&right_encoder {
-    status = "disabled";
 };

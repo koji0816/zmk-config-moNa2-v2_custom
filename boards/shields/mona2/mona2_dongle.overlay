@@ -1,11 +1,30 @@
 #include "mona2.dtsi"
 
-&kscan0 {
-    status = "disabled";
-};
-
 / {
     chosen {
         zmk,kscan = &xiaord_mock_kscan;
     };
+
+    // kscan0 のGPIO定義をドングル用の空定義に差し替える
+    // disabled にせず、GPIOピンだけ抜いてZMKのsplitルーティングは維持する
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "col2row";
+        row-gpios = <>;
+        col-gpios = <>;
+    };
+};
+
+&left_encoder {
+    status = "disabled";
+};
+
+&right_encoder {
+    status = "disabled";
+};
+
+// trackball_central_listener はドングルで有効化する
+// (peripheralのトラックボールイベントをcentralで受け取るため)
+&trackball_central_listener {
+    status = "okay";
 };

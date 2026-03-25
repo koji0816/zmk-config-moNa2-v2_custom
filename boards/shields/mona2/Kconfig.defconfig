@@ -14,7 +14,6 @@ config SPI
 config PMW3610
     default y
 endif
-
 if SHIELD_MONA2_R || SHIELD_MONA2_L
 config NFCT_PINS_AS_GPIOS
     default y

@@ -18,24 +18,20 @@
 #
 ---
 include:
-  # ドングル (Central + ディスプレイ)
   - board: xiao_ble//zmk
     shield: mona2_dongle xiaord
     snippet: studio-rpc-usb-uart
     artifact-name: mona2_dongle
 
-  # 右手 (Peripheral + トラックボール)
   - board: xiao_ble//zmk
     shield: mona2_r rgbled_adapter
     cmake-args: -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
     artifact-name: mona2_right
 
-  # 左手 (Peripheral + エンコーダ)
   - board: xiao_ble//zmk
     shield: mona2_l rgbled_adapter
     cmake-args: -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
     artifact-name: mona2_left
 
-  # リセット用
   - board: xiao_ble//zmk
     shield: settings_reset

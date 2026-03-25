@@ -5,8 +5,9 @@
         zmk,kscan = &xiaord_mock_kscan;
     };
 
-    // kscan0 をGPIOを使わないpassthroughダミーに完全置き換え
-    // ZMKのsplitイベントルーティングは維持しつつ、GPIOピン競合を回避
+    // kscan0 を完全に削除して再定義
+    /delete-node/ kscan;
+    
     kscan0: kscan {
         compatible = "zmk,kscan-mock";
         columns = <11>;

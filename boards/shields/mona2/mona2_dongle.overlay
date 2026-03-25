@@ -3,8 +3,7 @@
 / {
     // 1. ディスプレイモジュール（xiaord）のタッチボタンを動かすための設定
     chosen {
-        zmk,kscan = &xiaord_mock_kscan;
-    };
+    zmk,kscan = &mock_kscan;
 };
 
 // 2. 【公式ガイド準拠】元のキー枠（kscan0）を無効化するのではなく、

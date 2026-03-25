@@ -1,35 +1,33 @@
 #include "mona2.dtsi"
 
 / {
-    // 1. ディスプレイモジュール（xiaord）のタッチボタンを動かすための設定
     chosen {
-    zmk,kscan = &mock_kscan;
+        zmk,kscan = &kscan0;  // kscan0をmock化したものを使う
+    };
 };
 
-// 2. 【公式ガイド準拠】元のキー枠（kscan0）を無効化するのではなく、
-// そのまま「サイズ0のダミー枠」に改造して再利用します。
-// これによりビルドエラーを完全に防ぎつつ、左右の配列ズレも解消します。
+// kscan0をmockダミーに改造（公式ガイド準拠）
 &kscan0 {
     compatible = "zmk,kscan-mock";
     columns = <0>;
     rows = <0>;
     events = <0>;
     status = "okay";
-
-    // 物理ハードウェア用の設定だけを剥がし、クラッシュ（大渋滞）を防ぎます
     /delete-property/ row-gpios;
     /delete-property/ col-gpios;
     /delete-property/ diode-direction;
 };
 
-// 3. ドングルの空きピンのノイズ暴走を防ぎます
+// dongle側でトラックボール入力を受信するlistenerを有効化
+&trackball_central_listener {
+    status = "okay";
+    // device プロパティは peripheral側(mona2_r)にあるので dongle側には不要
+};
+
+// dongleにはエンコーダなし
 &left_encoder {
     status = "disabled";
 };
-
 &right_encoder {
     status = "disabled";
 };
-
-// ※trackball_central は存在しないので書きません！
-// ※physical_layout0 の紐付けも、kscan0を再利用しているので書かなくてOKです！

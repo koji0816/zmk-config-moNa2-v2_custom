@@ -24,6 +24,3 @@
     status = "disabled";
 };
 
-&trackball_central_listener {
-    status = "okay";
-};

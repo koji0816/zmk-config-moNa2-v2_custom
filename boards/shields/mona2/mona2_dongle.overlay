@@ -15,6 +15,11 @@
     };
 };
 
+// physical_layoutのkscan参照をmockに上書き
+&physical_layout0 {
+    kscan = <&kscan0>;
+};
+
 &left_encoder {
     status = "disabled";
 };

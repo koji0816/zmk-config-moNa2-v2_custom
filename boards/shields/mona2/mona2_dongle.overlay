@@ -2,16 +2,15 @@
 
 / {
     chosen {
-        zmk,kscan = &xiaord_mock_kscan;
+        zmk,kscan = &kscan0;
     };
 
-    // kscan0 を完全に削除して再定義
     /delete-node/ kscan;
-    
+
     kscan0: kscan {
         compatible = "zmk,kscan-mock";
-        columns = <11>;
-        rows = <4>;
+        columns = <0>;
+        rows = <0>;
         events = <0>;
     };
 };
@@ -19,8 +18,6 @@
 &left_encoder {
     status = "disabled";
 };
-
 &right_encoder {
     status = "disabled";
 };
-

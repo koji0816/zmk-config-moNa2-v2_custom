@@ -2,31 +2,28 @@
 
 / {
     chosen {
-        // ドングル自体には打鍵するキーがないため、kscan0（0x0のダミー）を主役にします。
-        // これにより左右の配列ズレ（Tab化現象）を完全に防ぎます。
+        // 1. 0x0のダミー枠で、配列ズレ（S+D=Tab化）を防ぐ
         zmk,kscan = &kscan0;
+        
+        // 2. 【超重要】左右からの入力を翻訳するためのマニュアルを指定！
+        // これがないとペアリング直後にフリーズします
+        zmk,matrix-transform = &default_transform;
     };
 };
 
-// 🔥ここが最大の修正ポイント！🔥
+// 3. 全体のキー数を0だと勘違いさせないための解除設定（前回と同じ）
 &physical_layout0 {
-    // 物理レイアウトから kscan の紐付けを強制解除します。
-    // これにより「キーボード全体が0キーだ」という勘違いを解き、全入力を許可させます。
     /delete-property/ kscan;
 };
 
-// エラー回避のため、元のキー枠を「0x0の無害なダミー」に改造して再利用します。
+// 4. エラー回避のための0x0ダミー（前回と同じ）
 &kscan0 {
     compatible = "zmk,kscan-mock";
     columns = <0>;
     rows = <0>;
     events = <0>;
     status = "okay";
-
-    // 物理ピンの設定を剥がし、システムクラッシュを防ぎます
     /delete-property/ row-gpios;
     /delete-property/ col-gpios;
     /delete-property/ diode-direction;
 };
-
-// ※エンコーダーの記述（&left_encoderなど）は、書かずに放置するのが一番安全（クラッシュしない）です。

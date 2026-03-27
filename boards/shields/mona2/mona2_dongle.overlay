@@ -1,22 +1,32 @@
 #include "mona2.dtsi"
 
 / {
-    chosen {
-        zmk,kscan = &kscan0;
-    };
-
-    /delete-node/ kscan;
-
-    kscan0: kscan {
+    // 1. ZMKのシステムを満たすための「サイズ0の完全なダミー」を作成
+    // （0x0なので、左手から飛んできたキー配列が12個ズレる問題=Tab化を完全に防ぎます）
+    dongle_kscan: dongle_kscan {
         compatible = "zmk,kscan-mock";
         columns = <0>;
         rows = <0>;
         events = <0>;
+        status = "okay";
+    };
+
+    // 2. このダミーをシステムの主役に設定
+    chosen {
+        zmk,kscan = &dongle_kscan;
     };
 };
 
-// physical_layoutのkscan参照をmockに上書き
+// 3. 物理レイアウトをダミーに紐付ける（これでZephyrのビルドエラーを防ぎます）
 &physical_layout0 {
-    kscan = <&kscan0>;
+    kscan = <&dongle_kscan>;
 };
 
+// 4. 元のキー枠は無効化（ディスプレイ通信とのピン競合を防ぐため）
+&kscan0 {
+    status = "disabled";
+};
+
+// ⚠️超重要⚠️
+// 以前書いていた &left_encoder や &right_encoder の記述は【すべて削除】しています。
+// そのまま放置するのが一番安全で、システムクラッシュを防ぎます。

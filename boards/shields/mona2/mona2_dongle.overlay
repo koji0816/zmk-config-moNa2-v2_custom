@@ -2,16 +2,25 @@
 
 / {
     chosen {
-        zmk,kscan = &xiaord_mock_kscan;
+        zmk,kscan = &mock_kscan;
         zmk,matrix-transform = &default_transform;
-        // ZMK Studioのパニックを防ぐため、既存の44キーレイアウトを維持します
+        // ZMK Studioのクラッシュを防ぐため、既存のレイアウトを維持します
         zmk,physical-layout = &physical_layout0;
+    };
+
+    // 【最大の解決策】ZMKの安全装置を解除するための「正しいサイズの器」
+    // 12列×4行のダミーを用意することで、レイアウト検証がパスし、全キーが通るようになります！
+    mock_kscan: mock_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <12>;
+        rows = <4>;
+        events = <0>;
     };
 };
 
-// 既存レイアウトの「受け皿」だけをxiaord公式のダミーにすり替えます
+// 既存のレイアウトに、正しいサイズのダミーを紐付けます
 &physical_layout0 {
-    kscan = <&xiaord_mock_kscan>;
+    kscan = <&mock_kscan>;
     transform = <&default_transform>;
 };
 
@@ -20,7 +29,7 @@
     status = "disabled";
 };
 
-// エンコーダーをダミーピンに逃がし、ディスプレイのフリーズと競合を完全防止
+// エンコーダーをダミーピンに逃がし、ディスプレイ競合を完全防止
 &left_encoder {
     status = "okay";
     a-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;

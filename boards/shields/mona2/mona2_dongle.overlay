@@ -2,25 +2,23 @@
 
 / {
     chosen {
-        // 【超重要】ドングルにはローカルキーがないため、zmk,kscan は「絶対に」書いてはいけません！
-        // これを消すことで、ZMKのサイズチェックがオフになり、左右からの全キーがPCに届くようになります。
+        // 【修正1】xiaord公式が提供しているダミー（xiaord_mock_kscan）を指定します [cite: 257]
+        zmk,kscan = &xiaord_mock_kscan;
         zmk,matrix-transform = &default_transform;
     };
 };
 
-// 物理レイアウトとローカルキーの紐付けを解除（システムエラーを防ぐため）
+// 【修正2】ZMK Dongle公式の作法に従い、物理レイアウトにダミーを紐付けます [cite: 364]
 &physical_layout0 {
-    /delete-property/ kscan;
+    kscan = <&xiaord_mock_kscan>;
 };
 
-// ドングル本体にはキーがないため無効化
+// ドングル本体には物理キーがないため無効化 [cite: 258]
 &kscan0 {
     status = "disabled";
 };
 
-// 【ディスプレイの完全維持 ＆ フリーズ防止】
-// XIAOの外部端子には出ていない「完全に安全な内部ピン（gpio1 11〜14）」にエンコーダーを逃がします。
-// これによりディスプレイは美しく映り続け、かつZMKのシステムも正常に起動します。
+// 【修正3】ディスプレイ(D5など)との競合を防ぐため、内部の空きピン（gpio1 11〜14）にエンコーダーを逃がします。
 &left_encoder {
     status = "okay";
     a-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
@@ -35,7 +33,7 @@
     b-gpios = <&gpio1 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// センサー名簿はオンのまま維持（これを切るとZMKのキーマップがクラッシュするため必須です）
+// センサーシステムはONのまま維持（キーマップクラッシュ防止）
 &sensors {
     status = "okay";
 };

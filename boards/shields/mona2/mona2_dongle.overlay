@@ -2,53 +2,46 @@
 
 / {
     chosen {
-        // 【ダミーA】ドングルのローカルキーを0個にして、配列ズレ（コンボ無効化）を防ぎます
-        zmk,kscan = &mock_local;
+        zmk,kscan = &mock_kscan;
         zmk,matrix-transform = &default_transform;
     };
 
-    mock_local: mock_local {
+    // 【解決策①】オフセットを0にし、コンボ（S+D=Tabなど）を正常に発動させます
+    mock_kscan: mock_kscan {
         compatible = "zmk,kscan-mock";
         columns = <0>;
         rows = <0>;
         events = <0>;
     };
-
-    // 【ダミーB】システム全体に「44キーある」と教え、通常キーがエラーで捨てられるのを防ぎます
-    mock_layout: mock_layout {
-        compatible = "zmk,kscan-mock";
-        columns = <11>;
-        rows = <4>;
-        events = <0>;
-    };
 };
 
-// 物理レイアウトをダミーB（11x4）に紐付けます
 &physical_layout0 {
-    kscan = <&mock_layout>;
+    // 【解決策②】ZMK 4.1.0の仕様に基づき、レイアウトのキー数計算を0x0ダミーから切り離します。
+    // これにより、mona2.dtsiに書かれた「44キー」が正しく認識され、通常キーがすべて復活します！
+    /delete-property/ kscan;
 };
 
-// ドングルには物理キーがないため、元のマトリクスを無効化
+// ドングルには物理キーがないため無効化
 &kscan0 {
     status = "disabled";
 };
 
-// 【超重要：ディスプレイ復活の魔法】
-// エンコーダーを「XIAOボードには存在しない安全な内部ピン（gpio0 6〜9）」に逃がします。
-// これでディスプレイのピンが解放されて画面が復活し、かつシステムも正常に起動します！
+// 【解決策③：最も重要】ディスプレイ（D5）との競合を防ぎ、フリーズを根絶！
+// エンコーダーを「ドングルでは使っていない空きピン（D1, D2, D3, D6）」に逃がします。
+// これにより、システムはクラッシュせず、ディスプレイも映り、子機からの回転データも完璧に受信できます。
 &left_encoder {
     status = "okay";
-    a-gpios = <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-    b-gpios = <&gpio0 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    a-gpios = <&xiao_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    b-gpios = <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
 &right_encoder {
     status = "okay";
-    a-gpios = <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-    b-gpios = <&gpio0 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    a-gpios = <&xiao_d 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    b-gpios = <&xiao_d 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// センサーシステムはオンのまま維持（キーマップ崩壊を防ぐため）
+// センサー名簿はオンのまま維持（ZMKのキーマップエラーを防ぐため必須です）
 &sensors {
     status = "okay";
 };

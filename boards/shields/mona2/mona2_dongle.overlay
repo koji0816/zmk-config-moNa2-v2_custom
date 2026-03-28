@@ -2,47 +2,40 @@
 
 / {
     chosen {
-        zmk,kscan = &mock_kscan;
+        // 【超重要】ドングルにはローカルキーがないため、zmk,kscan は「絶対に」書いてはいけません！
+        // これを消すことで、ZMKのサイズチェックがオフになり、左右からの全キーがPCに届くようになります。
         zmk,matrix-transform = &default_transform;
-    };
-
-    // オフセットを0にし、コンボを正常に発動させるダミー枠
-    mock_kscan: mock_kscan {
-        compatible = "zmk,kscan-mock";
-        columns = <0>;
-        rows = <0>;
-        events = <0>;
     };
 };
 
-// 通常キー（AやSなど）が枠外エラーで捨てられるのを防ぐ
+// 物理レイアウトとローカルキーの紐付けを解除（システムエラーを防ぐため）
 &physical_layout0 {
     /delete-property/ kscan;
 };
 
-// ドングルには物理キーがないため無効化
+// ドングル本体にはキーがないため無効化
 &kscan0 {
     status = "disabled";
 };
 
-// 【超重要：ディスプレイ完全復活の魔法】
-// ディスプレイのピン（D1, D3, D5, D6など）を一切邪魔しないように、
-// XIAOの端子には出ていない完全に安全な内部ピン（gpio0 13〜16）にエンコーダーを逃がします！
+// 【ディスプレイの完全維持 ＆ フリーズ防止】
+// XIAOの外部端子には出ていない「完全に安全な内部ピン（gpio1 11〜14）」にエンコーダーを逃がします。
+// これによりディスプレイは美しく映り続け、かつZMKのシステムも正常に起動します。
 &left_encoder {
     status = "okay";
-    a-gpios = <&gpio0 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-    b-gpios = <&gpio0 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    a-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    b-gpios = <&gpio1 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
 &right_encoder {
     status = "okay";
     compatible = "alps,ec11";
     steps = <24>;
-    a-gpios = <&gpio0 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-    b-gpios = <&gpio0 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    a-gpios = <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    b-gpios = <&gpio1 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// センサー名簿はオンのまま維持（キーマップエラー防止）
+// センサー名簿はオンのまま維持（これを切るとZMKのキーマップがクラッシュするため必須です）
 &sensors {
     status = "okay";
 };

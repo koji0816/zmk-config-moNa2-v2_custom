@@ -2,8 +2,7 @@
 
 / {
     chosen {
-        // 【修正①】ZMK 4.1のレイアウトバグを根絶するため、物理レイアウトへの紐付けを削除します
-        // これによりキーが弾き捨てられる現象と、オフセットの暴走が完全に直ります！
+        // ZMK 4.1のレイアウトバグを根絶し、普通のキーを復活させる
         /delete-property/ zmk,physical-layout;
         
         zmk,kscan = &kscan0;
@@ -11,7 +10,7 @@
     };
 };
 
-// 【修正②】オフセットを0にするための「0x0ダミー枠」
+// オフセットを0にし、コンボを復活させる「0x0ダミー枠」
 &kscan0 {
     compatible = "zmk,kscan-mock";
     columns = <0>;
@@ -19,15 +18,11 @@
     events = <0>;
     status = "okay";
 
+    // 物理ハードウェア設定と、非推奨のlabel警告を剥がす
+    /delete-property/ label;
     /delete-property/ row-gpios;
     /delete-property/ col-gpios;
     /delete-property/ diode-direction;
-};
-
-// 【修正③】トラックボールの受信窓口を「オン」にします
-// （mona2.dtsiでオフになっているため、これがないとドングルでマウスが動きません！）
-&trackball_central_listener {
-    status = "okay";
 };
 
 // ゴーストセンサーによるフリーズ封鎖

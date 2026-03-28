@@ -2,36 +2,36 @@
 
 / {
     chosen {
-        zmk,kscan = &mock_kscan;
-        zmk,matrix-transform = &default_transform;
-        // ZMK Studioのクラッシュを防ぐため、既存のレイアウトを維持します
-        zmk,physical-layout = &physical_layout0;
+        // xiaord公式のダミーを指定（ディスプレイ動作と入力窓口に必須）
+        zmk,kscan = &xiaord_mock_kscan;
+        // ドングル専用のレイアウトを指定
+        zmk,physical-layout = &dongle_layout;
     };
 
-    // 【最大の解決策】ZMKの安全装置を解除するための「正しいサイズの器」
-    // 12列×4行のダミーを用意することで、レイアウト検証がパスし、全キーが通るようになります！
-    mock_kscan: mock_kscan {
-        compatible = "zmk,kscan-mock";
-        columns = <12>;
-        rows = <4>;
-        events = <0>;
+    // 【最大の解決策】座標(keys)を持たない、ZMK公式のドングル用レイアウト
+    // これによりZMKの「枠外エラー」が解除され、左右からの全キーが通るようになります
+    dongle_layout: dongle_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Dongle Layout";
+        transform = <&default_transform>;
     };
 };
 
-// 既存のレイアウトに、正しいサイズのダミーを紐付けます
+// 元のレイアウトとマトリクスは無効化
 &physical_layout0 {
-    kscan = <&mock_kscan>;
-    transform = <&default_transform>;
+    status = "disabled";
 };
 
-// 物理キー枠を無効化
 &kscan0 {
     status = "disabled";
 };
 
-// エンコーダーをダミーピンに逃がし、ディスプレイ競合を完全防止
+// 【超重要】エンコーダーを「ディスプレイと競合しない安全なピン」に逃がして生かす
+// ※ compatible は必ず "alps,ec11" にしてください（kscan-mockにするとシステムが死にます）
 &left_encoder {
     status = "okay";
+    compatible = "alps,ec11";
+    steps = <24>;
     a-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
     b-gpios = <&gpio1 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
@@ -44,7 +44,13 @@
     b-gpios = <&gpio1 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// センサーシステムはONのまま維持（キーマップクラッシュ防止）
+// センサーシステムはONのまま維持（キーマップのクラッシュ防止）
 &sensors {
     status = "okay";
+    sensors = <&left_encoder &right_encoder>;
+};
+
+// トラックボールのパニックエラーを防ぐため無効化
+&trackball_central_listener {
+    status = "disabled";
 };

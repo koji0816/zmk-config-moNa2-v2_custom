@@ -1,40 +1,46 @@
 #include "mona2.dtsi"
 
 / {
-    // 1. 【ローカル用ダミー】サイズ 0x0
-    // 左右からのキーデータの「配列ズレ（オフセット）」を0にするための門番です。
-    mock_local: mock_local {
-        compatible = "zmk,kscan-mock";
-        columns = <0>;
-        rows = <0>;
-        events = <0>;
-        status = "okay";
-    };
-
-    // 2. 【レイアウト用ダミー】サイズ 12x4
-    // ZMKに「このキーボードは全体で48キーあるよ」と教え、データの切り捨てを防ぐ器です。
-    mock_layout: mock_layout {
-        compatible = "zmk,kscan-mock";
-        columns = <12>;
-        rows = <4>;
-        events = <0>;
-        status = "okay";
-    };
-
     chosen {
-        // オフセット計算には「0x0のダミー」を指定
-        zmk,kscan = &mock_local;
-        // 翻訳マニュアルを指定（フリーズ防止）
+        // 翻訳マニュアルをセット（これがないとS+D=Tabなどの怪奇現象が起きます）
         zmk,matrix-transform = &default_transform;
     };
 };
 
+// ZMK 4.1.0の「全体のキー数が0になるバグ」を回避
 &physical_layout0 {
-    // 物理レイアウト（最大キー数）には「12x4のダミー」を指定
-    kscan = <&mock_layout>;
+    /delete-property/ kscan;
 };
 
-// 元のハードウェアキー枠は完全に無効化してピン競合を防ぐ
+// 物理キー枠を無害なダミーに変換（Zephyrのエラー回避）
 &kscan0 {
-    status = "disabled";
+    compatible = "zmk,kscan-mock";
+    columns = <0>;
+    rows = <0>;
+    events = <0>;
+    status = "okay";
+    /delete-property/ row-gpios;
+    /delete-property/ col-gpios;
+    /delete-property/ diode-direction;
+};
+
+// エンコーダーも無害なダミーに変換
+&left_encoder {
+    compatible = "zmk,kscan-mock";
+    events = <0>;
+    status = "okay";
+    /delete-property/ a-gpios;
+    /delete-property/ b-gpios;
+    /delete-property/ resolution;
+    /delete-property/ steps;
+};
+
+&right_encoder {
+    compatible = "zmk,kscan-mock";
+    events = <0>;
+    status = "okay";
+    /delete-property/ a-gpios;
+    /delete-property/ b-gpios;
+    /delete-property/ resolution;
+    /delete-property/ steps;
 };

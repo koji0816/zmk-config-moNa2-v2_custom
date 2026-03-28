@@ -15,29 +15,31 @@
     };
 };
 
-// ZMK 4.1.0の仕様に基づくレイアウトバグ回避（通常キー復活）
+// 通常キー（AやSなど）が枠外エラーで捨てられるのを防ぐ
 &physical_layout0 {
     /delete-property/ kscan;
 };
 
+// ドングルには物理キーがないため無効化
 &kscan0 {
     status = "disabled";
 };
 
-// 【左エンコーダー】空きピン（D1, D2）へ逃がしてディスプレイ競合を回避
+// 【超重要：ディスプレイ完全復活の魔法】
+// ディスプレイのピン（D1, D3, D5, D6など）を一切邪魔しないように、
+// XIAOの端子には出ていない完全に安全な内部ピン（gpio0 13〜16）にエンコーダーを逃がします！
 &left_encoder {
     status = "okay";
-    a-gpios = <&xiao_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-    b-gpios = <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    a-gpios = <&gpio0 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    b-gpios = <&gpio0 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// 【右エンコーダー】空きピン（D3, D6）へ逃がす ＋ 欠落していた「デバイス情報」を補完！
 &right_encoder {
     status = "okay";
-    compatible = "alps,ec11";    // ← これがビルドを完走させる鍵です！
-    steps = <24>;                // ← これも必須です
-    a-gpios = <&xiao_d 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-    b-gpios = <&xiao_d 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    compatible = "alps,ec11";
+    steps = <24>;
+    a-gpios = <&gpio0 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    b-gpios = <&gpio0 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
 // センサー名簿はオンのまま維持（キーマップエラー防止）

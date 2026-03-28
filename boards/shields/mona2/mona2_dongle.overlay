@@ -2,30 +2,27 @@
 
 / {
     chosen {
+        // 【修正1】消えていた「受け皿」を復活させます。これで通信のシャットアウトが直ります。
         zmk,kscan = &kscan0;
         zmk,matrix-transform = &default_transform;
     };
 };
 
-&physical_layout0 {
-    /delete-property/ kscan;
-};
-
+// 【修正2】「0キーバグ」を防ぐため、枠のサイズを mona2.dtsi に合わせて 11列×4行 にします。
 &kscan0 {
     compatible = "zmk,kscan-mock";
-    columns = <0>;
-    rows = <0>;
-    
-    // 【復活】kscan_mockドライバのコンパイルエラーを防ぐための必須行
+    columns = <11>;
+    rows = <4>;
     events = <0>;
-    
     status = "okay";
+
     /delete-property/ row-gpios;
     /delete-property/ col-gpios;
     /delete-property/ diode-direction;
 };
 
-// フリーズの真の原因（ゴーストセンサー）の封鎖
+// 【修正3】システムパニックの元凶である「センサーシステム」そのものを完全に封鎖します。
+// （※ エンコーダーをkscan-mockにするのはパニックの元なのでやめ、単に無効化します）
 &sensors {
     status = "disabled";
 };
@@ -37,3 +34,5 @@
 &right_encoder {
     status = "disabled";
 };
+
+// ※ &physical_layout0 の delete-property は、枠のサイズを11x4にしたので不要になり削りました！

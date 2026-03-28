@@ -6,7 +6,7 @@
         zmk,matrix-transform = &default_transform;
     };
 
-    // 【解決策①】オフセットを0にし、コンボ（S+D=Tabなど）を正常に発動させます
+    // オフセットを0にし、コンボを正常に発動させるダミー枠
     mock_kscan: mock_kscan {
         compatible = "zmk,kscan-mock";
         columns = <0>;
@@ -15,33 +15,32 @@
     };
 };
 
+// ZMK 4.1.0の仕様に基づくレイアウトバグ回避（通常キー復活）
 &physical_layout0 {
-    // 【解決策②】ZMK 4.1.0の仕様に基づき、レイアウトのキー数計算を0x0ダミーから切り離します。
-    // これにより、mona2.dtsiに書かれた「44キー」が正しく認識され、通常キーがすべて復活します！
     /delete-property/ kscan;
 };
 
-// ドングルには物理キーがないため無効化
 &kscan0 {
     status = "disabled";
 };
 
-// 【解決策③：最も重要】ディスプレイ（D5）との競合を防ぎ、フリーズを根絶！
-// エンコーダーを「ドングルでは使っていない空きピン（D1, D2, D3, D6）」に逃がします。
-// これにより、システムはクラッシュせず、ディスプレイも映り、子機からの回転データも完璧に受信できます。
+// 【左エンコーダー】空きピン（D1, D2）へ逃がしてディスプレイ競合を回避
 &left_encoder {
     status = "okay";
     a-gpios = <&xiao_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
     b-gpios = <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
+// 【右エンコーダー】空きピン（D3, D6）へ逃がす ＋ 欠落していた「デバイス情報」を補完！
 &right_encoder {
     status = "okay";
+    compatible = "alps,ec11";    // ← これがビルドを完走させる鍵です！
+    steps = <24>;                // ← これも必須です
     a-gpios = <&xiao_d 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
     b-gpios = <&xiao_d 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// センサー名簿はオンのまま維持（ZMKのキーマップエラーを防ぐため必須です）
+// センサー名簿はオンのまま維持（キーマップエラー防止）
 &sensors {
     status = "okay";
 };

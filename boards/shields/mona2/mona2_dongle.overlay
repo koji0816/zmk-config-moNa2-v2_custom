@@ -2,21 +2,18 @@
 
 / {
     chosen {
-        // xiaord公式のダミーを指定
         zmk,kscan = &xiaord_mock_kscan;
         zmk,matrix-transform = &default_transform;
-        
-        // 【超重要】既存の physical_layout0 を捨て、下記で作る「ドングル専用レイアウト」を指定します！
-        zmk,physical-layout = &dongle_layout;
+        // 【修正】mona2.dtsi に書かれている「44キー分の座標」をそのまま使います！
+        // これでZMKが「0キーだ」と勘違いして全捨てするバグが消滅します。
+        zmk,physical-layout = &physical_layout0;
     };
+};
 
-    // 【超重要】ZMK Dongle公式の作法に従った、座標(keys)を持たない空っぽのレイアウト
-    // これによりZMKの安全装置（キーの全捨て）が解除され、すべての入力が通るようになります！
-    dongle_layout: dongle_layout {
-        compatible = "zmk,physical-layout";
-        display-name = "Dongle Layout";
-        transform = <&default_transform>;
-    };
+// ZMK公式の作法通り、既存レイアウトの「受け皿」だけをダミーに上書きします
+&physical_layout0 {
+    kscan = <&xiaord_mock_kscan>;
+    transform = <&default_transform>;
 };
 
 // 物理キー枠を無効化
@@ -24,7 +21,7 @@
     status = "disabled";
 };
 
-// エンコーダーをダミーピンに逃がし、ディスプレイのフリーズを防ぐ
+// エンコーダーをダミーピンに逃がし、ディスプレイのフリーズを完全防止
 &left_encoder {
     status = "okay";
     a-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
@@ -39,7 +36,7 @@
     b-gpios = <&gpio1 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// センサーシステムはONのまま維持（キーマップクラッシュ防止）
+// センサーシステムはONのまま維持
 &sensors {
     status = "okay";
 };

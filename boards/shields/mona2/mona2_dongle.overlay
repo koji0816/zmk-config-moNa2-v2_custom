@@ -1,37 +1,38 @@
 #include "mona2.dtsi"
 
 / {
+    // 【最大の解決策】ZMKのサイズチェックをパスさせるための「大きな器」
+    // 12列×6行のダミーを用意することで、起動時のサイレントクラッシュを完全に防ぎます！
+    mock_kscan: mock_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <12>;
+        rows = <6>;
+        events = <0>;
+    };
+
     chosen {
-        // xiaord公式のダミーを指定（ディスプレイ動作と入力窓口に必須）
-        zmk,kscan = &xiaord_mock_kscan;
-        // ドングル専用のレイアウトを指定
-        zmk,physical-layout = &dongle_layout;
-    };
-
-    // 【最大の解決策】座標(keys)を持たない、ZMK公式のドングル用レイアウト
-    // これによりZMKの「枠外エラー」が解除され、左右からの全キーが通るようになります
-    dongle_layout: dongle_layout {
-        compatible = "zmk,physical-layout";
-        display-name = "Dongle Layout";
-        transform = <&default_transform>;
+        // ペリフェラルからのBluetooth信号（行列データ）を変換するために必須
+        zmk,matrix-transform = &default_transform;
+        // ZMK Studioやキーマップの要となる物理レイアウト
+        zmk,physical-layout = &physical_layout0;
+        
+        // ※ zmk,kscan は xiaord.overlay が自動で上書きするためここでは省略します
     };
 };
 
-// 元のレイアウトとマトリクスは無効化
+// 既存の物理レイアウトに、十分な大きさのダミー枠を紐付けます
 &physical_layout0 {
-    status = "disabled";
+    kscan = <&mock_kscan>;
 };
 
+// 元の物理キーマトリクスは無効化
 &kscan0 {
     status = "disabled";
 };
 
-// 【超重要】エンコーダーを「ディスプレイと競合しない安全なピン」に逃がして生かす
-// ※ compatible は必ず "alps,ec11" にしてください（kscan-mockにするとシステムが死にます）
+// エンコーダーをダミーピンに逃がし、ディスプレイ競合を完全防止
 &left_encoder {
     status = "okay";
-    compatible = "alps,ec11";
-    steps = <24>;
     a-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
     b-gpios = <&gpio1 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
@@ -44,10 +45,9 @@
     b-gpios = <&gpio1 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// センサーシステムはONのまま維持（キーマップのクラッシュ防止）
+// センサーシステムはONのまま維持（キーマップクラッシュ防止）
 &sensors {
     status = "okay";
-    sensors = <&left_encoder &right_encoder>;
 };
 
 // トラックボールのパニックエラーを防ぐため無効化

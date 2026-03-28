@@ -2,38 +2,39 @@
 
 / {
     chosen {
-        // ZMK 4.1のレイアウトバグを根絶し、普通のキーを復活させる
-        /delete-property/ zmk,physical-layout;
-        
-        zmk,kscan = &kscan0;
+        zmk,kscan = &mock_kscan;
         zmk,matrix-transform = &default_transform;
+    };
+
+    // オフセットを0にし、コンボを正常に動かすための「0x0ダミー枠」
+    mock_kscan: mock_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
     };
 };
 
-// オフセットを0にし、コンボを復活させる「0x0ダミー枠」
+// 物理レイアウトをダミー枠に紐付け、通常キーを復活させる
+&physical_layout0 {
+    kscan = <&mock_kscan>;
+};
+
+// ドングルには物理キーがないため、元のマトリクスを無効化
 &kscan0 {
-    compatible = "zmk,kscan-mock";
-    columns = <0>;
-    rows = <0>;
-    events = <0>;
-    status = "okay";
-
-    // 物理ハードウェア設定と、非推奨のlabel警告を剥がす
-    /delete-property/ label;
-    /delete-property/ row-gpios;
-    /delete-property/ col-gpios;
-    /delete-property/ diode-direction;
-};
-
-// ゴーストセンサーによるフリーズ封鎖
-&sensors {
     status = "disabled";
 };
 
+// 【超重要】フリーズとキーマップ崩壊を同時に解決する魔法
+// ディスプレイ(D5ピン)との競合を防ぐため、エンコーダーのピンを空いているD1・D2ピンに逃がします。
+// これによりシステムはフリーズせず、センサーも生き残るため全キーが復活します！
 &left_encoder {
-    status = "disabled";
+    status = "okay";
+    a-gpios = <&xiao_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    b-gpios = <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-&right_encoder {
-    status = "disabled";
+// センサーシステムは「okay」のまま維持する（絶対にdisabledにしないこと）
+&sensors {
+    status = "okay";
 };

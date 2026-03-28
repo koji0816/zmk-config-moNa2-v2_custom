@@ -7,21 +7,25 @@
     };
 };
 
-// 物理キー枠を安全なダミー（0x0）に変換
+&physical_layout0 {
+    /delete-property/ kscan;
+};
+
 &kscan0 {
     compatible = "zmk,kscan-mock";
     columns = <0>;
     rows = <0>;
+    
+    // 【復活】kscan_mockドライバのコンパイルエラーを防ぐための必須行
+    events = <0>;
+    
     status = "okay";
-    
-    // ※ここに「events = <0>;」は絶対に書かないでください（フリーズの原因です）
-    
     /delete-property/ row-gpios;
     /delete-property/ col-gpios;
     /delete-property/ diode-direction;
 };
 
-// システムクラッシュを防ぐためのセンサー封鎖
+// フリーズの真の原因（ゴーストセンサー）の封鎖
 &sensors {
     status = "disabled";
 };

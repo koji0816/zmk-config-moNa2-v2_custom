@@ -1,14 +1,25 @@
 #include "mona2.dtsi"
 
 / {
+    // 【ダミーA】親機用の「0x0」ダミー
+    // 左手のキー番号がズレるのを防ぎます（コンボが復活します）
+    mock_local: mock_local {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+        status = "okay";
+    };
+
     chosen {
-        // 【修正1】消えていた「受け皿」を復活させます。これで通信のシャットアウトが直ります。
-        zmk,kscan = &kscan0;
+        zmk,kscan = &mock_local;
         zmk,matrix-transform = &default_transform;
     };
 };
 
-// 【修正2】「0キーバグ」を防ぐため、枠のサイズを mona2.dtsi に合わせて 11列×4行 にします。
+// 【ダミーB】レイアウト用の「11x4」ダミー
+// mona2.dtsiで physical_layout0 に紐付いている kscan0 を乗っ取ります。
+// システムに「キーボード全体で44キーある」と教え、標準キーが捨てられるのを防ぎます（通常キー復活します）
 &kscan0 {
     compatible = "zmk,kscan-mock";
     columns = <11>;
@@ -21,8 +32,7 @@
     /delete-property/ diode-direction;
 };
 
-// 【修正3】システムパニックの元凶である「センサーシステム」そのものを完全に封鎖します。
-// （※ エンコーダーをkscan-mockにするのはパニックの元なのでやめ、単に無効化します）
+// フリーズの真の原因（ゴーストセンサー）の封鎖
 &sensors {
     status = "disabled";
 };
@@ -34,5 +44,3 @@
 &right_encoder {
     status = "disabled";
 };
-
-// ※ &physical_layout0 の delete-property は、枠のサイズを11x4にしたので不要になり削りました！

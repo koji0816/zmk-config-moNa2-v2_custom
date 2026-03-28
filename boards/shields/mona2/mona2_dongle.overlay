@@ -2,22 +2,30 @@
 
 / {
     chosen {
-        zmk,kscan = &mock_kscan;
+        // 【ダミーA】ドングルのローカルキーを0個にして、配列ズレ（コンボ無効化）を防ぎます
+        zmk,kscan = &mock_local;
         zmk,matrix-transform = &default_transform;
     };
 
-    // オフセットを0にし、コンボを正常に動かすための「0x0ダミー枠」
-    mock_kscan: mock_kscan {
+    mock_local: mock_local {
         compatible = "zmk,kscan-mock";
         columns = <0>;
         rows = <0>;
         events = <0>;
     };
+
+    // 【ダミーB】システム全体に「44キーある」と教え、通常キーがエラーで捨てられるのを防ぎます
+    mock_layout: mock_layout {
+        compatible = "zmk,kscan-mock";
+        columns = <11>;
+        rows = <4>;
+        events = <0>;
+    };
 };
 
-// 物理レイアウトをダミー枠に紐付け、通常キーを復活させる
+// 物理レイアウトをダミーB（11x4）に紐付けます
 &physical_layout0 {
-    kscan = <&mock_kscan>;
+    kscan = <&mock_layout>;
 };
 
 // ドングルには物理キーがないため、元のマトリクスを無効化
@@ -25,16 +33,22 @@
     status = "disabled";
 };
 
-// 【超重要】フリーズとキーマップ崩壊を同時に解決する魔法
-// ディスプレイ(D5ピン)との競合を防ぐため、エンコーダーのピンを空いているD1・D2ピンに逃がします。
-// これによりシステムはフリーズせず、センサーも生き残るため全キーが復活します！
+// 【超重要：ディスプレイ復活の魔法】
+// エンコーダーを「XIAOボードには存在しない安全な内部ピン（gpio0 6〜9）」に逃がします。
+// これでディスプレイのピンが解放されて画面が復活し、かつシステムも正常に起動します！
 &left_encoder {
     status = "okay";
-    a-gpios = <&xiao_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-    b-gpios = <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    a-gpios = <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    b-gpios = <&gpio0 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// センサーシステムは「okay」のまま維持する（絶対にdisabledにしないこと）
+&right_encoder {
+    status = "okay";
+    a-gpios = <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+    b-gpios = <&gpio0 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+};
+
+// センサーシステムはオンのまま維持（キーマップ崩壊を防ぐため）
 &sensors {
     status = "okay";
 };

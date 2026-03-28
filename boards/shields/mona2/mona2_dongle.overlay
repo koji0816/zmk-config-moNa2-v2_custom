@@ -2,35 +2,30 @@
 
 / {
     chosen {
-        // 【修正①】キー入力を受け付けるための必須設定（0x0ダミーを指定）
         zmk,kscan = &kscan0;
-        // 配列のズレを防ぐための翻訳マニュアル
         zmk,matrix-transform = &default_transform;
     };
 };
 
-// ZMK 4.1.0の「全体のキー数が0になるバグ」を回避
-&physical_layout0 {
-    /delete-property/ kscan;
-};
-
-// 物理キー枠を無害なダミーに変換（エラー回避 ＆ オフセット0化）
+// 物理キー枠を安全なダミー（0x0）に変換
 &kscan0 {
     compatible = "zmk,kscan-mock";
     columns = <0>;
     rows = <0>;
-    events = <0>;
     status = "okay";
+    
+    // ※ここに「events = <0>;」は絶対に書かないでください（フリーズの原因です）
+    
     /delete-property/ row-gpios;
     /delete-property/ col-gpios;
     /delete-property/ diode-direction;
 };
 
+// システムクラッシュを防ぐためのセンサー封鎖
 &sensors {
     status = "disabled";
 };
 
-// 名簿から消えたので、堂々と無効化（disabled）できます！
 &left_encoder {
     status = "disabled";
 };

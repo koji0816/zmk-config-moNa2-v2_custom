@@ -1,36 +1,38 @@
 #include "mona2.dtsi"
 
 / {
-    // 1. ドングル用の0x0ダミー枠（S+D=Tabの配列ズレ防止 ＆ レイアウトエラー回避用）
-    dongle_kscan: dongle_kscan {
-        compatible = "zmk,kscan-mock";
-        columns = <0>;
-        rows = <0>;
-        events = <0>;
-        status = "okay";
-    };
-
     chosen {
-        zmk,kscan = &dongle_kscan;
+        // 【修正①】キー入力を受け付けるための必須設定（0x0ダミーを指定）
+        zmk,kscan = &kscan0;
+        // 配列のズレを防ぐための翻訳マニュアル
         zmk,matrix-transform = &default_transform;
     };
 };
 
-// 2. 物理レイアウトを安全なダミー枠に紐付け
+// ZMK 4.1.0の「全体のキー数が0になるバグ」を回避
 &physical_layout0 {
-    kscan = <&dongle_kscan>;
+    /delete-property/ kscan;
 };
 
-// 3. 物理ハードウェアは安全に無効化
+// 物理キー枠を無害なダミーに変換（エラー回避 ＆ オフセット0化）
 &kscan0 {
-    status = "disabled";
+    compatible = "zmk,kscan-mock";
+    columns = <0>;
+    rows = <0>;
+    events = <0>;
+    status = "okay";
+    /delete-property/ row-gpios;
+    /delete-property/ col-gpios;
+    /delete-property/ diode-direction;
 };
 
-// 4. 【超重要】ゴーストセンサーによるシステムクラッシュを完全に防ぐ
+// 【修正②】フリーズの真の原因（ゴーストセンサー）の撃退
+// センサー統括システムからエンコーダーの「登録名簿」を抹消し、クラッシュを防ぎます
 &sensors {
-    status = "disabled";
+    /delete-property/ sensors;
 };
 
+// 名簿から消えたので、堂々と無効化（disabled）できます！
 &left_encoder {
     status = "disabled";
 };

@@ -4,13 +4,12 @@
     chosen {
         zmk,kscan = &xiaord_mock_kscan;
         zmk,matrix-transform = &default_transform;
-        // 【修正】mona2.dtsi に書かれている「44キー分の座標」をそのまま使います！
-        // これでZMKが「0キーだ」と勘違いして全捨てするバグが消滅します。
+        // ZMK Studioのパニックを防ぐため、既存の44キーレイアウトを維持します
         zmk,physical-layout = &physical_layout0;
     };
 };
 
-// ZMK公式の作法通り、既存レイアウトの「受け皿」だけをダミーに上書きします
+// 既存レイアウトの「受け皿」だけをxiaord公式のダミーにすり替えます
 &physical_layout0 {
     kscan = <&xiaord_mock_kscan>;
     transform = <&default_transform>;
@@ -21,7 +20,7 @@
     status = "disabled";
 };
 
-// エンコーダーをダミーピンに逃がし、ディスプレイのフリーズを完全防止
+// エンコーダーをダミーピンに逃がし、ディスプレイのフリーズと競合を完全防止
 &left_encoder {
     status = "okay";
     a-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
@@ -36,7 +35,7 @@
     b-gpios = <&gpio1 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 };
 
-// センサーシステムはONのまま維持
+// センサーシステムはONのまま維持（キーマップクラッシュ防止）
 &sensors {
     status = "okay";
 };

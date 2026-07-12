@@ -72,6 +72,20 @@
             bindings = <&kp LS(LG(S))>;
             label = "MACRO_SCREENSHOT";
         };
+
+        win_E: win_E {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press>,
+                <&kp LEFT_WIN>,
+                <&macro_tap>,
+                <&kp E>,
+                <&macro_release>,
+                <&kp LEFT_WIN>;
+
+            label = "WIN_E";
+        };
     };
 
     behaviors {
@@ -139,10 +153,10 @@
 
         layer_3 {
             bindings = <
-&trans          &kp F7  &kp F8  &kp F9  &kp F10                       &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
-&trans          &kp F4  &kp F5  &kp F6  &kp F11            &kp LG(E)  &none         &none         &none         &none         &none
-&bt BT_CLR      &kp F1  &kp F2  &kp F3  &kp F12  &trans    &trans     &none         &none         &none         &none         &none
-&bt BT_CLR_ALL  &trans  &trans  &trans  &trans   &trans    &trans     &trans                                                  &none
+&trans          &kp F7  &kp F8  &kp F9  &kp F10                    &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
+&trans          &kp F4  &kp F5  &kp F6  &kp F11            &win_E  &none         &none         &none         &none         &none
+&bt BT_CLR      &kp F1  &kp F2  &kp F3  &kp F12  &trans    &trans  &none         &none         &none         &none         &none
+&bt BT_CLR_ALL  &trans  &trans  &trans  &trans   &trans    &trans  &trans                                                  &none
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;

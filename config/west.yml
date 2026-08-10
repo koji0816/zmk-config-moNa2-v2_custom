@@ -18,6 +18,8 @@ manifest:
       url-base: https://github.com/kot149
     - name: shakushakupanda  # <-- mouse gesture RPC module
       url-base: https://github.com/shakushakupanda
+    - name: prospector  # <-- Prospector module
+      url-base: https://github.com/t-ogura
   projects:
     # ── ZMK 本体 ────────────────────────────────────────────────
     # DYA Studio の最新機能 (ランタイムマクロ / ランタイムコンボ) は
@@ -136,5 +138,11 @@ manifest:
     - name: zmk-module-mouse-gesture-rpc
       remote: shakushakupanda
       revision: main
+
+    # ── Prospector (Status Advertisement) ───────────────────────
+    - name: prospector-zmk-module
+      remote: prospector
+      revision: v2.2.0
+      path: modules/prospector-zmk-module
   self:
     path: config

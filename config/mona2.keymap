@@ -54,7 +54,7 @@
 };
 
 &lt {
-    quick-tap-ms = <200>;
+    quick-tap-ms = <300>;
     flavor = "balanced";
 };
 
@@ -84,8 +84,8 @@
         layer4_ESC {
             slot = <0>;
             display-name = "Layer4 ESC";
-            key-positions = <38 39>;
-            bindings = <&lt 4 ESC>;
+            key-positions = <39 38>;
+            bindings = <&lt 0 ESC>;
         };
 
         tab {
@@ -106,6 +106,48 @@
             #binding-cells = <1>;
             bindings = <&to 0 &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
             label = "TO_LAYER_0";
+        };
+
+        macro1: macro1 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_PARENTHESIS &kp RIGHT_PARENTHESIS &kp LEFT_ARROW>;
+            label = "MACRO1";
+        };
+
+        macro2: macro2 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_BRACKET &kp RIGHT_BRACKET &kp LEFT_ARROW>;
+            label = "MACRO2";
+        };
+
+        macro3: macro3 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_BRACE &kp RIGHT_BRACE &kp LEFT_ARROW>;
+            label = "MACRO3";
+        };
+
+        macro_ctrl_c: macro_ctrl_c {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LC(C)>;
+            label = "MACRO_CTRL_C";
+        };
+
+        macro_ctrl_v: macro_ctrl_v {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LC(V)>;
+            label = "MACRO_CTRL_V";
+        };
+
+        macro_screenshot: macro_screenshot {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LS(LG(S))>;
+            label = "MACRO_SCREENSHOT";
         };
 
         BT0: BT0 {
@@ -175,13 +217,20 @@
             tapping-term-ms = <200>;
         };
 
-        tp_repeat_mo1: tp_repeat_mo1 {
-            compatible = "zmk,behavior-hold-tap";
-            label = "TP_REPEAT_MO1";
-            bindings = <&mo>, <&key_repeat>;
+        scroll_up_down: mouse_wheel_up_down {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
 
-            #binding-cells = <2>;
-            tapping-term-ms = <200>;
+            tap-ms = <20>;
+        };
+
+        scroll_right_left: mouse_wheel_right_left {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&msc SCRL_LEFT>, <&msc SCRL_RIGHT>;
+
+            tap-ms = <20>;
         };
 
         // エンコーダ用 runtime-configurable sensor rotate
@@ -210,163 +259,66 @@
             display-name = "Toggle Layer Off";
             toggle-mode = "off";
         };
-
-        zfold: zfold {
-            compatible = "zmk,behavior-hold-tap";
-            label = "ZFOLD";
-            bindings = <&kp>, <&kp>;
-
-            #binding-cells = <2>;
-            tapping-term-ms = <300>;
-            flavor = "hold-preferred";
-            quick-tap-ms = <150>;
-            hold-while-undecided;
-        };
-
-        zfoldZ: zfoldZ {
-            compatible = "zmk,behavior-tap-dance";
-            label = "ZFOLDZ";
-            #binding-cells = <0>;
-            bindings = <&zfold LEFT_SHIFT Z>, <&kp LS(Z)>;
-        };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        win_layer {
-            display-name = "WIN";
+        default_layer {
+            display-name = "DEFAULT";
             bindings = <
-&kp Q             &kp W         &kp E         &kp R        &kp T                                      &kp Y          &kp U  &kp I      &kp O    &kp P
-&kp A             &kp S         &kp D         &kp F        &kp G                       &kp MINUS      &kp H          &kp J  &kp K      &kp L    &lt 4 SEMICOLON
-&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V        &kp B        &kp COLON      &kp SEMICOLON  &kp N          &kp M  &kp COMMA  &kp DOT  &lt 10 SLASH
-&kp RCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt 2 GRAVE  &lt 4 SPACE  &lt 6 MINUS    &kp ENTER      &kp BACKSPACE                             &kp RIGHT_SHIFT
+&kp Q          &kp W         &kp E         &kp R                 &kp T                                                      &kp Y        &kp U  &kp I      &kp O    &kp P
+&kp A          &kp S         &kp D         &kp F                 &kp G                                       &macro_ctrl_c  &kp H        &kp J  &kp K      &kp L    &kp MINUS
+&kp Z          &kp X         &kp C         &kp V                 &kp B        &kp TAB                        &macro_ctrl_v  &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
+&mt LCTRL ESC  &kp LEFT_WIN  &kp LEFT_ALT  &mt LEFT_SHIFT LANG2  &lt 2 SPACE  &lt_to_layer_0 3 LANGUAGE_1    &kp BACKSPACE  &lt 1 ENTER                             &kp LEFT_SHIFT
             >;
 
-            sensor-bindings = <&rsr_default>, <&inc_dec_kp C_VOL_DN C_VOL_UP>;
+            sensor-bindings = <&scroll_right_left>;
         };
 
-        mac_layer {
-            display-name = "MAC";
+        layer_1 {
+            display-name = "NUM_NAV";
             bindings = <
-&kp Q             &kp W         &kp E         &kp R        &kp T                                      &kp Y          &kp U  &kp I      &kp O    &kp P
-&kp A             &kp S         &kp D         &kp F        &kp G                       &kp MINUS      &kp H          &kp J  &kp K      &kp L    &lt 4 SEMICOLON
-&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V        &kp B        &kp COLON      &kp SEMICOLON  &kp N          &kp M  &kp COMMA  &kp DOT  &lt 11 SLASH
-&kp LEFT_GUI      &kp LEFT_WIN  &kp LEFT_ALT  &lt 3 GRAVE  &lt 5 SPACE  &lt 7 MINUS    &kp ENTER      &kp BACKSPACE                             &kp RIGHT_SHIFT
+&none  &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &none                     &none   &none           &none     &none            &kp HOME
+&none  &kp NUMBER_4  &kp N5        &kp NUMBER_6  &none             &trans  &none   &none           &kp UP    &none            &kp END
+&none  &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &none   &trans    &trans  &none   &kp LEFT_ARROW  &kp DOWN  &kp RIGHT_ARROW  &kp PAGE_UP
+&none  &kp NUMBER_0  &none         &trans        &trans  &trans    &trans  &trans                                             &kp PAGE_DOWN
             >;
 
-            sensor-bindings = <&rsr_default>, <&inc_dec_kp C_VOL_DN C_VOL_UP>;
+            sensor-bindings = <&scroll_up_down>;
         };
 
-        num_win {
-            display-name = "NUM_W";
+        layer_2 {
+            display-name = "SYMBOL";
             bindings = <
-&kp ESCAPE  &kp EXCLAMATION       &kp AT_SIGN            &kp HASH          &kp DOLLAR                                &kp EQUAL      &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp ASTERISK
-&kp TAB     &kp PERCENT           &kp CARET              &kp AMPERSAND     &kp ASTERISK                 &kp PERCENT  &kp NUMBER_0   &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &kp MINUS
-&kp PIPE    &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &trans    &kp PLUS     &kp DOT        &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp SLASH
-&kp LCTRL   &kp LEFT_GUI          &kp LEFT_ALT           &trans            &trans             &trans    &kp ENTER    &kp BACKSPACE                                            &kp RIGHT_SHIFT
+&kp EXCLAMATION   &kp AT_SIGN  &kp POUND          &kp DOLLAR  &kp PERCENT                     &kp COLON  &macro1  &kp LEFT_PARENTHESIS  &kp RPAR           &kp BACKSLASH
+&kp SINGLE_QUOTE  &kp CARET    &kp AMPERSAND      &kp ASTRK   &kp EQUAL              &none    &kp SEMI   &macro2  &kp LEFT_BRACKET      &kp RIGHT_BRACKET  &kp INT_YEN
+&kp TILDE         &kp GRAVE    &kp DOUBLE_QUOTES  &kp UNDER   &kp PLUS     &none     &none    &kp PIPE   &macro3  &kp LEFT_BRACE        &kp RIGHT_BRACE    &none
+&none             &trans       &trans             &trans      &trans       &trans    &kp DEL  &trans                                                       &macro_screenshot
             >;
 
-            sensor-bindings = <&rsr_default>;
+            sensor-bindings = <&scroll_up_down>;
         };
 
-        num_mac {
-            display-name = "NUM_M";
+        layer_3 {
+            display-name = "FN_BT";
             bindings = <
-&kp ESCAPE    &kp EXCLAMATION       &kp AT_SIGN            &kp HASH          &kp DOLLAR                                &kp EQUAL      &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp ASTERISK
-&kp TAB       &kp PERCENT           &kp CARET              &kp AMPERSAND     &kp ASTERISK                 &kp PERCENT  &kp NUMBER_0   &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &kp MINUS
-&kp PIPE      &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &trans    &kp PLUS     &kp DOT        &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp SLASH
-&kp LEFT_GUI  &kp LEFT_GUI          &kp LEFT_ALT           &trans            &trans             &trans    &kp ENTER    &kp BACKSPACE                                            &kp RIGHT_SHIFT
+&trans  &kp F7  &kp F8  &kp F9  &kp F10                    &bt BT_SEL 0  &bt BT_SEL 1    &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
+&trans  &kp F4  &kp F5  &kp F6  &kp F11            &trans  &none         &studio_unlock  &none         &none         &none
+&trans  &kp F1  &kp F2  &kp F3  &kp F12  &trans    &trans  &none         &none           &none         &none         &bt BT_CLR
+&trans  &trans  &trans  &trans  &trans   &trans    &trans  &trans                                                    &bt BT_CLR_ALL
             >;
 
-            sensor-bindings = <&rsr_default>;
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;
         };
 
-        mouse_win {
-            display-name = "MOUSE_W";
+        layer_4 {
+            display-name = "MOUSE";
             bindings = <
-&kp ESCAPE                  &kp LC(Z)       &kp UP_ARROW    &kp LC(Y)        &kp LC(V)                                  &kp CARET         &kp AMPERSAND      &mkp MB3        &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS
-&kp TAB                     &kp LEFT_ARROW  &screenshot     &kp RIGHT_ARROW  &kp ASTERISK               &kp UNDERSCORE  &kp EXCLAMATION   &mkp MB1           &mo 6           &mkp MB2              &henkan
-&mt LEFT_SHIFT KP_NUMBER_0  &kp LC(Y)       &kp DOWN_ARROW  &kp END          &kp HOME      &kp EQUAL    &trans          &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp LEFT_BRACE  &kp RIGHT_BRACE       &kp LC(SPACE)
-&kp LCTRL                   &trans          &trans          &trans           &trans        &trans       &kp ENTER       &kp BACKSPACE                                                              &kp PIPE
-            >;
-
-            sensor-bindings = <&rsr_default>;
-        };
-
-        mouse_mac {
-            display-name = "MOUSE_M";
-            bindings = <
-&kp ESCAPE                  &kp LG(Z)       &kp UP_ARROW              &kp LG(LS(Z))    &kp LG(V)                                  &kp CARET         &kp AMPERSAND      &mkp MB3        &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS
-&kp TAB                     &kp LEFT_ARROW  &kp LG(LC(LS(NUMBER_4)))  &kp RIGHT_ARROW  &kp LG(A)                  &kp UNDERSCORE  &kp EXCLAMATION   &mkp MB1           &mo 7           &mkp MB2              &kp LC(SPACE)
-&mt LEFT_SHIFT KP_NUMBER_0  &kp LG(LC(Z))   &kp DOWN_ARROW            &kp LG(RIGHT)    &kp LG(LEFT)  &kp EQUAL    &trans          &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp LEFT_BRACE  &kp RIGHT_BRACE       &kp LC(SPACE)
-&kp LCTRL                   &trans          &trans                    &trans           &trans        &trans       &kp ENTER       &kp BACKSPACE                                                              &kp PIPE
-            >;
-
-            sensor-bindings = <&rsr_default>;
-        };
-
-        scroll_win {
-            display-name = "SCRL_W";
-            bindings = <
-&kp ESCAPE      &kp LC(LS(TAB))         &kp UP_ARROW    &kp LC(TAB)              &trans                           &trans  &trans    &mkp MB3  &trans    &trans
-&kp HOME        &kp LEFT_ARROW          &kp DOWN_ARROW  &kp RIGHT_ARROW          &kp END            &out OUT_TOG  &trans  &mkp MB1  &trans    &mkp MB2  &trans
-&kp LEFT_SHIFT  &kp LG(LS(LEFT_ARROW))  &trans          &kp LG(LS(RIGHT_ARROW))  &trans   &trans    &trans        &trans  &mkp MB1  &trans    &mkp MB2  &trans
-&trans          &trans                  &trans          &trans                   &trans   &trans    &trans        &trans                                &trans
-            >;
-
-            sensor-bindings = <&rsr_default>;
-        };
-
-        scroll_mac {
-            display-name = "SCRL_M";
-            bindings = <
-&kp ESCAPE      &kp LC(LS(TAB))         &kp UP_ARROW    &kp LC(TAB)              &trans                           &trans  &trans    &mkp MB3  &trans    &trans
-&kp HOME        &kp LEFT_ARROW          &kp DOWN_ARROW  &kp RIGHT_ARROW          &kp END            &out OUT_TOG  &trans  &mkp MB1  &trans    &mkp MB2  &trans
-&kp LEFT_SHIFT  &kp LG(LS(LEFT_ARROW))  &trans          &kp LG(LS(RIGHT_ARROW))  &trans   &trans    &trans        &trans  &trans    &trans    &trans    &trans
-&trans          &trans                  &trans          &trans                   &trans   &trans    &trans        &trans                                &trans
-            >;
-
-            sensor-bindings = <&rsr_default>;
-        };
-
-        function_win {
-            display-name = "FN_W";
-            bindings = <
-&trans  &trans  &trans  &trans  &trans                    &trans  &trans    &trans    &trans    &trans
-&trans  &trans  &trans  &trans  &trans            &trans  &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans    &trans    &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans                                &trans
-            >;
-        };
-
-        function_mac {
-            display-name = "FN_M";
-            bindings = <
-&kp A   &trans  &trans  &trans  &trans                    &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans            &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans                          &trans
-            >;
-        };
-
-        ble_win {
-            display-name = "BLE_W";
-            bindings = <
-&kp F1  &kp F2        &kp F3        &kp F4        &kp F5                          &BT0         &BT1    &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
-&kp F6  &kp F7        &kp F8        &kp F9        &trans            &out OUT_TOG  &trans       &trans  &trans        &trans        &studio_unlock
-&trans  &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &trans  &trans    &bootloader   &trans       &trans  &trans        &trans        &bt BT_CLR
-&trans  &trans        &trans        &trans        &trans  &trans    &trans        &bootloader                                      &bt BT_CLR_ALL
-            >;
-        };
-
-        ble_mac {
-            display-name = "BLE_M";
-            bindings = <
-&kp F1  &kp F2        &kp F3        &kp F4        &kp F5                          &BT0         &BT1    &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
-&kp F6  &kp F7        &kp F8        &kp F9        &trans            &out OUT_TOG  &trans       &trans  &trans        &trans        &studio_unlock
-&trans  &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &trans  &trans    &bootloader   &trans       &trans  &trans        &trans        &bt BT_CLR
-&trans  &trans        &trans        &trans        &trans  &trans    &trans        &bootloader                                      &bt BT_CLR_ALL
+&none  &none  &none  &none  &none                  &none  &mkp MB4  &mkp MB3  &mkp MB5  &none
+&none  &none  &none  &none  &none           &none  &none  &mkp MB1  &none     &mkp MB2  &none
+&none  &none  &none  &none  &none  &none    &none  &none  &none     &none     &none     &none
+&none  &none  &none  &none  &none  &none    &none  &none                                &none
             >;
         };
     };

@@ -65,14 +65,6 @@
 };
 
 / {
-    /* ─────────────────────────────────────────────────────────────
-       コンボ (DYA Studio から編集可能)
-       ※デフォルトの tab / layer4_ESC combo は削除済み
-       ────────────────────────────────────────────────────────── */
-    runtime_combo_defaults {
-        compatible = "cormoran,runtime-combo-defaults";
-    };
-
     /* 静的マクロ。キーマップ上で &BT0 / &screenshot などの名前で直接
        参照しているため、そのまま残している (DYA Studio 上では編集不可)。
        DYA Studio から編集したいマクロは Web UI で新規作成し、

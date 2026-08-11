@@ -64,36 +64,41 @@
     acceleration-exponent = <0>;
 };
 
+/* ─────────────────────────────────────────────────────────────
+   Auto Mouse Layer (AML) の設定 (Input Processor)
+   https://zenn.dev/kot149/articles/zmk-auto-mouse-layer
+   ────────────────────────────────────────────────────────── */
+
+/* トラックボール操作時にレイヤー4 (MOUSE) を有効化 */
+&trackball_central_listener {
+    input-processors = <&zip_temp_layer 4 10000 &mg &mouse_runtime_input_processor &scroll_runtime_input_processor &zip_scroll_scaler 1 100 &inertial_scroll>;
+};
+
+/* キー入力直後の誤爆防止と、マウス操作中に押してもAMLを解除しないキー位置 */
+&zip_temp_layer {
+    require-prior-idle-ms = <200>;
+    excluded-positions = <
+        6   // MB4 (U)
+        7   // MB3 (I)
+        8   // MB5 (O)
+        17  // MB1 (J)
+        19  // MB2 (L)
+        33 34 35 36 37 38 39 40 41 // 親指キー群
+    >;
+};
+
+/* マウスクリック時にタイムアウトを更新し、クリック後250msでAMLを解除 */
+&mkp_input_listener {
+    input-processors = <&zip_temp_layer 4 250>;
+};
+
 / {
     /* ─────────────────────────────────────────────────────────────
        コンボ (DYA Studio から編集可能)
-
-       旧 `combos { compatible = "zmk,combos"; }` はコンパイル時固定で
-       DYA Studio から編集できないため、zmk-feature-runtime-combo の
-       「コンパイル時デフォルト」ノードへ移行した。
-       ここに書いた内容はフラッシュ直後から有効で、設定を消しても復活する。
-       DYA Studio 側で編集するとそのスロットだけ上書きされ、
-       Web UI の "Reset to Default" でここの値へ戻せる。
-
-       スロット総数は CONFIG_ZMK_RUNTIME_COMBO_MAX_COMBOS (現状 16)。
-       未使用スロット (2〜15) は DYA Studio から自由に追加できる。
+       ※デフォルトの tab / layer4_ESC combo は削除済み
        ────────────────────────────────────────────────────────── */
     runtime_combo_defaults {
         compatible = "cormoran,runtime-combo-defaults";
-
-        layer4_ESC {
-            slot = <0>;
-            display-name = "Layer4 ESC";
-            key-positions = <39 38>;
-            bindings = <&lt 0 ESC>;
-        };
-
-        tab {
-            slot = <1>;
-            display-name = "Tab";
-            key-positions = <11 12>;
-            bindings = <&kp TAB>;
-        };
     };
 
     /* 静的マクロ。キーマップ上で &BT0 / &screenshot などの名前で直接

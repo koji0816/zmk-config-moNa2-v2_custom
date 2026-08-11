@@ -64,6 +64,11 @@
     acceleration-exponent = <0>;
 };
 
+/* マウスクリック時にタイムアウトを更新し、クリック後250msでAMLを解除 */
+&mkp_input_listener {
+    input-processors = <&zip_temp_layer 4 250>;
+};
+
 / {
     /* 静的マクロ。キーマップ上で &BT0 / &screenshot などの名前で直接
        参照しているため、そのまま残している (DYA Studio 上では編集不可)。

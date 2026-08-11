@@ -9,12 +9,6 @@ config ZMK_BLE
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
-config INPUT
-    default y
-
-config ZMK_POINTING
-    default y
-
 config SPI
     default y
 
@@ -29,6 +23,12 @@ config PAW3222
 endif
 
 if SHIELD_MONA2_R || SHIELD_MONA2_L
+
+config INPUT
+    default y
+
+config ZMK_POINTING
+    default y
 
 config NFCT_PINS_AS_GPIOS
     default y

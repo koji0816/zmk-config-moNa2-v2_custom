@@ -143,7 +143,7 @@
 &trackball_central_listener {
     status = "okay";
     device = <&trackball_central>;
-    input-processors = <&zip_temp_layer 4 10000 &mg &mouse_runtime_input_processor &scroll_runtime_input_processor &zip_scroll_scaler 1 100 &inertial_scroll>;
+    input-processors = <&zip_temp_layer 4 1000 &mg &mouse_runtime_input_processor &scroll_runtime_input_processor &zip_scroll_scaler 1 100 &inertial_scroll>;
 };
 
 

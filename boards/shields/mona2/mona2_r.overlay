@@ -124,17 +124,21 @@
    https://zenn.dev/kot149/articles/zmk-auto-mouse-layer
    ────────────────────────────────────────────────────── */
 
-/* キー入力直後の誤爆防止と、マウス操作中に押してもAMLを解除しないキー位置 */
-&zip_temp_layer {
-    require-prior-idle-ms = <200>;
-    excluded-positions = <
-        6   // MB4 (U)
-        7   // MB3 (I)
-        8   // MB5 (O)
-        17  // MB1 (J)
-        19  // MB2 (L)
-        33 34 35 36 37 38 39 40 41 // 親指キー群
-    >;
+/ {
+    /* キー入力直後の誤爆防止と、マウス操作中に押してもAMLを解除しないキー位置 */
+    zip_temp_layer: zip_temp_layer {
+        compatible = "zmk,input-processor-temp-layer";
+        #input-processor-cells = <2>;
+        require-prior-idle-ms = <200>;
+        excluded-positions = <
+            6   // MB4 (U)
+            7   // MB3 (I)
+            8   // MB5 (O)
+            17  // MB1 (J)
+            19  // MB2 (L)
+            33 34 35 36 37 38 39 40 41 // 親指キー群
+        >;
+    };
 };
 
 &trackball_central_listener {
@@ -143,8 +147,4 @@
     input-processors = <&zip_temp_layer 4 10000 &mg &mouse_runtime_input_processor &scroll_runtime_input_processor &zip_scroll_scaler 1 100 &inertial_scroll>;
 };
 
-/* マウスクリック時にタイムアウトを更新し、クリック後250msでAMLを解除 */
-&mkp_input_listener {
-    input-processors = <&zip_temp_layer 4 250>;
-};
 

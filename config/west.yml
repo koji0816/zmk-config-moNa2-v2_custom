@@ -142,7 +142,7 @@ manifest:
     # ── Prospector (Status Advertisement) ───────────────────────
     - name: prospector-zmk-module
       remote: prospector
-      revision: v2.2.0
+      revision: main
       path: modules/prospector-zmk-module
   self:
     path: config

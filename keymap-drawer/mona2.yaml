@@ -151,7 +151,7 @@ layers:
   - ''
   - ''
   - ''
-  - {t: ▽, type: trans}
+  - BT CLR
   - F1
   - F2
   - F3
@@ -162,8 +162,8 @@ layers:
   - ''
   - ''
   - ''
-  - BT CLR
-  - {t: ▽, type: trans}
+  - ''
+  - BT CLR ALL
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -171,6 +171,6 @@ layers:
   - {type: held}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - BT CLR ALL
+  - ''
   MOUSE: ['', '', '', '', '', '', '&mkp MB4', '&mkp MB3', '&mkp MB5', '', '', '', '', '', '', '', '', '&mkp MB1', '', '&mkp MB2', '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '', '', '', '', '', '', '']

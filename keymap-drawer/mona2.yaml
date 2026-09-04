@@ -145,7 +145,7 @@ layers:
   - F5
   - F6
   - F11
-  - {t: ▽, type: trans}
+  - '&win_E'
   - ''
   - '&studio_unlock'
   - ''
